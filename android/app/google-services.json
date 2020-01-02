@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "416394256570",
+    "firebase_url": "https://karigari-11b3a.firebaseio.com",
+    "project_id": "karigari-11b3a",
+    "storage_bucket": "karigari-11b3a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416394256570:android:1a83b0ac33f70e14b02283",
+        "android_client_info": {
+          "package_name": "com.geniusv.karigari"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "416394256570-l738cm6corv5llsqr3r3gi1jafcpiehk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.geniusv.karigari",
+            "certificate_hash": "c001d23a05a163d4ecc73e17bd61ffa74b296af3"
+          }
+        },
+        {
+          "client_id": "416394256570-ctjma0fik1ol0tqnfoshgjdibhu78hvq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7H0PL1uyL5B7126lL1VA1S_Sv1uNSngE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "416394256570-ctjma0fik1ol0tqnfoshgjdibhu78hvq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
