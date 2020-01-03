@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:karigari/HomePage.dart';
 import 'package:karigari/pages/login.dart';
 
 void main(){

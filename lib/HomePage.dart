@@ -4,6 +4,9 @@ import 'package:carousel_pro/carousel_pro.dart';
 //import 'package:karigari/components/horizontal_listview.dart';
 import 'package:karigari/components/Categories.dart';
 import 'package:karigari/pages/cart.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:karigari/pages/login.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -113,6 +116,19 @@ class _HomePageState extends State<HomePage> {
               child: ListTile(
                 title: Text('About'),
                 leading: Icon(Icons.help),
+              ),
+            ),
+            Divider(),
+
+            InkWell(
+              onTap: (){
+                FirebaseAuth.instance.signOut().then((value){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
+                });
+              },
+              child: ListTile(
+                title: Text('Log out'),
+                leading: Icon(Icons.transit_enterexit, color: Colors.grey,),
               ),
             ),
           ],

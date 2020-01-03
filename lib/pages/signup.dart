@@ -1,5 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:karigari/HomePage.dart';
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:intl/intl.dart';
+
 
 class SignUp extends StatefulWidget {
   @override
@@ -11,9 +18,11 @@ class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
-  TextEditingController _nameTextController = TextEditingController();
+  TextEditingController _firstnameTextController = TextEditingController();
+  TextEditingController _lastnameTextController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
-  String gender;
+  TextEditingController _phoneNumberController = TextEditingController();
+  String gender="Male";
   String groupvalue = "Male";
   bool hidePass = true;
   bool loading = false;
@@ -51,6 +60,7 @@ class _SignUpState extends State<SignUp> {
                     key: _formKey,
                     child: ListView(
                       children: <Widget>[
+                        // ====================== First Name ======================
                         Padding(
                           padding:
                           const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
@@ -61,9 +71,9 @@ class _SignUpState extends State<SignUp> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 12.0),
                               child: TextFormField(
-                                controller: _nameTextController,
+                                controller: _firstnameTextController,
                                 decoration: InputDecoration(
-                                  hintText: "Full name",
+                                  hintText: "First name",
                                   icon: Icon(Icons.person_outline),
                                 ),
                                 validator: (value) {
@@ -76,42 +86,33 @@ class _SignUpState extends State<SignUp> {
                             ),
                           ),
                         ),
-
-                       Padding(
-                         padding:
-                         const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                         child: new Container(
+                        // ====================== Last Name ====================
+                        Padding(
+                          padding:
+                          const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                          child: Material(
+                            borderRadius: BorderRadius.circular(10.0),
                             color: Colors.white.withOpacity(0.4),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                    child: ListTile(
-                                        title: Text("Male",
-                                          textAlign: TextAlign.end,
-                                          style: TextStyle(color: Colors.white),
-                                        )
-                                        ,trailing: Radio(
-                                      value: "Male",groupValue: groupvalue,
-                                      onChanged: (e)=>valueChanged(e),)
-                                    )
+                            elevation: 0.0,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: TextFormField(
+                                controller: _lastnameTextController,
+                                decoration: InputDecoration(
+                                  hintText: "Last name",
+                                  icon: Icon(Icons.person_outline),
                                 ),
-
-                                Expanded(
-                                    child: ListTile(
-                                        title: Text("Female",
-                                          textAlign: TextAlign.end,
-                                          style: TextStyle(color: Colors.white),
-                                        )
-                                        ,trailing: Radio(
-                                      value: "Female",groupValue: groupvalue,
-                                      onChanged: (e)=>valueChanged(e),)
-                                    )
-                                )
-                              ],
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return "The name field cannot be empty";
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
                           ),
-                       ),
-
+                        ),
+                        // ====================== Email ======================
                         Padding(
                           padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                           child: Material(
@@ -141,7 +142,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                           ),
                         ),
-
+                        // ====================== Password ======================
                         Padding(
                           padding:
                           const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
@@ -178,6 +179,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ),
 
+                        // ====================== Confirm Password ======================
                         Padding(
                           padding:
                           const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
@@ -192,9 +194,9 @@ class _SignUpState extends State<SignUp> {
                                   controller: _confirmPasswordController,
                                   obscureText: hidePass,
                                   decoration: InputDecoration(
-                                    hintText: "Confirm password",
-                                    icon: Icon(Icons.lock_outline),
-                                    border: InputBorder.none
+                                      hintText: "Confirm password",
+                                      icon: Icon(Icons.lock_outline),
+                                      border: InputBorder.none
                                   ),
                                   validator: (value) {
                                     if (value.isEmpty) {
@@ -217,6 +219,85 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ),
 
+                        // ====================== Gender ======================
+                       Padding(
+                         padding:
+                         const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                         child: new Container(
+                            color: Colors.white.withOpacity(0.4),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                    child: ListTile(
+                                        title: Text("Male",
+                                          textAlign: TextAlign.end,
+                                          style: TextStyle(color: Colors.white),
+                                        )
+                                        ,trailing: Radio(
+                                      value: "Male",groupValue: groupvalue,
+                                      onChanged: (e)=>valueChanged(e),)
+                                    )
+                                ),
+
+                                Expanded(
+                                    child: ListTile(
+                                        title: Text("Female",
+                                          textAlign: TextAlign.end,
+                                          style: TextStyle(color: Colors.white),
+                                        )
+                                        ,trailing: Radio(
+                                      value: "Female",groupValue: groupvalue,
+                                      onChanged: (e)=>valueChanged(e),)
+                                    )
+                                )
+                              ],
+                            ),
+                          ),
+                       ),
+
+                        // ====================== Phone Number ======================
+                        Padding(
+                          padding:
+                          const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                          child: Material(
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Colors.white.withOpacity(0.4),
+                            elevation: 0.0,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 12.0),
+                              child: TextFormField(
+                                controller: _phoneNumberController,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  WhitelistingTextInputFormatter.digitsOnly
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: "Phone number",
+                                  icon: Icon(Icons.phone),
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return "The Phone number field cannot be empty";
+                                  }else if(value.length !=10){
+                                    return "Phone number should be of 10 digits";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        // =================== DOB ===================
+
+                        Padding(
+                          padding:
+                          const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                          child: Text("Yo",style: TextStyle(color: Colors.white),),
+                        ),
+
+
+
+                        // ====================== REGISTRATION BUTTON ======================
                         Padding(
                           padding:
                           const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
@@ -225,7 +306,9 @@ class _SignUpState extends State<SignUp> {
                               color: Colors.blue.shade700,
                               elevation: 0.0,
                               child: MaterialButton(
-                                onPressed: () {},
+                                onPressed: () async{
+                                  validateForm();
+                                },
                                 minWidth: MediaQuery.of(context).size.width,
                                 child: Text(
                                   "Register",
@@ -279,4 +362,72 @@ class _SignUpState extends State<SignUp> {
       }
     });
   }
+
+  Future validateForm() async {
+    FormState formState = _formKey.currentState;
+
+
+    if (formState.validate()) {
+      FirebaseUser user = await firebaseAuth.currentUser();
+
+
+      if (user == null) {
+        firebaseAuth
+            .createUserWithEmailAndPassword(
+            email: _emailTextController.text,
+            password: _passwordTextController.text)
+            .then(
+              (user) => Firestore.instance.collection("users").add({
+                "First Name": _firstnameTextController.text,
+                "Last Name": _lastnameTextController.text,
+                "email": _emailTextController.text,
+                "userId": user.user.uid,
+                "phone":   _phoneNumberController.text,
+                "gender": gender,
+                "username": _firstnameTextController.text + " " + _lastnameTextController.text,
+          }),
+        )
+            .catchError(
+              (err) => print(
+            err.toString(),
+          ),
+        );
+
+
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+            ModalRoute.withName(HomePage().toString()));
+      } else {
+        print("already a user");
+      }
+    }
+  }
 }
+  /*
+  Future validateForm() async{
+    FormState formState = _formKey.currentState;
+
+    if(formState.validate()){
+      formState.reset();
+      FirebaseUser user = await firebaseAuth.currentUser();
+      if(user == null){
+        firebaseAuth.createUserWithEmailAndPassword(
+            email: _emailTextController.text,
+            password: _passwordTextController.text).then((user) => {
+
+              _userServices.createUser(
+                  {
+                  "username": _nameTextController.text,
+                  "email": _emailTextController.text,
+                  "userId": user.user.uid,
+                  "gender": gender,
+              }
+              )
+        }).catchError((err)=>print(err.toString()));
+
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      }
+    }
+  }*/
