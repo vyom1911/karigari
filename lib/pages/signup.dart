@@ -14,7 +14,8 @@ class _SignUpState extends State<SignUp> {
   TextEditingController _nameTextController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
   String gender;
-
+  String groupvalue = "Male";
+  bool hidePass = true;
   bool loading = false;
 
 
@@ -76,6 +77,41 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ),
 
+                       Padding(
+                         padding:
+                         const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                         child: new Container(
+                            color: Colors.white.withOpacity(0.4),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                    child: ListTile(
+                                        title: Text("Male",
+                                          textAlign: TextAlign.end,
+                                          style: TextStyle(color: Colors.white),
+                                        )
+                                        ,trailing: Radio(
+                                      value: "Male",groupValue: groupvalue,
+                                      onChanged: (e)=>valueChanged(e),)
+                                    )
+                                ),
+
+                                Expanded(
+                                    child: ListTile(
+                                        title: Text("Female",
+                                          textAlign: TextAlign.end,
+                                          style: TextStyle(color: Colors.white),
+                                        )
+                                        ,trailing: Radio(
+                                      value: "Female",groupValue: groupvalue,
+                                      onChanged: (e)=>valueChanged(e),)
+                                    )
+                                )
+                              ],
+                            ),
+                          ),
+                       ),
+
                         Padding(
                           padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                           child: Material(
@@ -115,20 +151,28 @@ class _SignUpState extends State<SignUp> {
                             elevation: 0.0,
                             child: Padding(
                               padding: const EdgeInsets.only(left: 12.0),
-                              child: TextFormField(
-                                controller: _passwordTextController,
-                                decoration: InputDecoration(
-                                  hintText: "Password",
-                                  icon: Icon(Icons.lock_outline),
+                              child: ListTile(
+                                title: TextFormField(
+                                  controller: _passwordTextController,
+                                  obscureText: hidePass,
+                                  decoration: InputDecoration(
+                                    hintText: "Password",
+                                    icon: Icon(Icons.lock_outline),
+                                  ),
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return "The password field cannot be empty";
+                                    } else if (value.length < 6) {
+                                      return "the password has to be at least 6 characters long";
+                                    }
+                                    return null;
+                                  },
                                 ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return "The password field cannot be empty";
-                                  } else if (value.length < 6) {
-                                    return "the password has to be at least 6 characters long";
-                                  }
-                                  return null;
-                                },
+                                trailing: IconButton(icon: Icon(Icons.remove_red_eye),onPressed: (){
+                                  setState(() {
+                                    hidePass= false;
+                                  });
+                                }),
                               ),
                             ),
                           ),
@@ -143,20 +187,31 @@ class _SignUpState extends State<SignUp> {
                             elevation: 0.0,
                             child: Padding(
                               padding: const EdgeInsets.only(left: 12.0),
-                              child: TextFormField(
-                                controller: _confirmPasswordController,
-                                decoration: InputDecoration(
-                                  hintText: "Confirm password",
-                                  icon: Icon(Icons.lock_outline),
+                              child: ListTile(
+                                title: TextFormField(
+                                  controller: _confirmPasswordController,
+                                  obscureText: hidePass,
+                                  decoration: InputDecoration(
+                                    hintText: "Confirm password",
+                                    icon: Icon(Icons.lock_outline),
+                                    border: InputBorder.none
+                                  ),
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return "The password field cannot be empty";
+                                    } else if (value.length < 6) {
+                                      return "The password has to be at least 6 characters long";
+                                    } else if (_passwordTextController.text != value){
+                                      return "The passwords do not match";
+                                    }
+                                    return null;
+                                  },
                                 ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return "The password field cannot be empty";
-                                  } else if (value.length < 6) {
-                                    return "the password has to be at least 6 characters long";
-                                  }
-                                  return null;
-                                },
+                                trailing: IconButton(icon: Icon(Icons.remove_red_eye),onPressed: (){
+                                  setState(() {
+                                    hidePass= false;
+                                  });
+                                }),
                               ),
                             ),
                           ),
@@ -211,5 +266,17 @@ class _SignUpState extends State<SignUp> {
         ],
       ),
     );
+  }
+
+  valueChanged(e) {
+    setState(() {
+      if (e == "Male"){
+        groupvalue=e;
+        gender=e;
+      }else if(e =="Female"){
+        groupvalue=e;
+        gender=e;
+      }
+    });
   }
 }
