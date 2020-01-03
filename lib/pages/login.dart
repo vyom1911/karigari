@@ -6,8 +6,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:karigari/HomePage.dart';
 import 'package:karigari/pages/signup.dart';
+import 'package:karigari/db/auth.dart';
 
 class Login extends StatefulWidget {
+  Login({this.auth});
+  final BaseAuth auth;
   @override
   _LoginState createState() => _LoginState();
 }
@@ -44,11 +47,52 @@ class _LoginState extends State<Login> {
     });
   }
 
-//  Future handleSignIn() async {
-//    setState(() {
-//      loading = true;
-//    });
-//  }
+  Future handleSignIn() async {
+
+    try {
+      String userId = await widget.auth.signInWithEmailAndPassword( _emailTextController.text.trim(), _passwordTextController.text.trim());
+
+      if (userId!=null) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      }
+      else{
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Login()));
+      }
+    }
+    catch(e){
+      print("Error: $e");
+    }
+
+  }
+  Widget showAlert(){
+      return Container(
+        color: Colors.amberAccent,
+        width: double.infinity,
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(Icons.error_outline)),
+            Expanded(child: Text("User Not Found, Please Register!"),),
+            Padding(
+              padding: EdgeInsets.only(left:8.0),
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: (){
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => Login()));
+                },
+              ),
+            )
+          ],
+        ),
+      );
+
+    return SizedBox(height: 0,);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,11 +141,11 @@ class _LoginState extends State<Login> {
                                   icon: Icon(Icons.alternate_email),
                                 ),
                                 validator: (value) {
-                                  if (value.isEmpty) {
+                                  if (value.trim().isEmpty) {
                                     Pattern pattern =
                                         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
                                     RegExp regex = new RegExp(pattern);
-                                    if (!regex.hasMatch(value))
+                                    if (!regex.hasMatch(value.trim()))
                                       return 'Please make sure your email address is valid';
                                     else
                                       return null;
@@ -148,7 +192,7 @@ class _LoginState extends State<Login> {
                               color: Colors.red.shade700,
                               elevation: 0.0,
                               child: MaterialButton(
-                                onPressed: () {},
+                                onPressed: () {handleSignIn();},
                                 minWidth: MediaQuery.of(context).size.width,
                                 child: Text(
                                   "Login",

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:karigari/HomePage.dart';
+import 'package:karigari/db/auth.dart';
 import 'package:karigari/pages/login.dart';
 
 void main(){
@@ -9,7 +10,7 @@ void main(){
       theme: ThemeData(
         primaryColor: Colors.red.shade900
       ),
-      home: Login(),
+      home: new Login(auth: new Auth()),
     )
   );
 }
