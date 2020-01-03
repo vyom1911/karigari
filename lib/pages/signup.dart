@@ -4,8 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:karigari/HomePage.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import 'package:intl/intl.dart';
+
 
 
 class SignUp extends StatefulWidget {
@@ -22,11 +21,25 @@ class _SignUpState extends State<SignUp> {
   TextEditingController _lastnameTextController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
   TextEditingController _phoneNumberController = TextEditingController();
+
+  TextEditingController _dateOfBirth = TextEditingController();
+  TextEditingController _monthOfBirth = TextEditingController();
+  TextEditingController _yearOfBirth = TextEditingController();
+
+  TextEditingController _dateOfMarriage = TextEditingController(text: "01");
+  TextEditingController _monthOfMarriage = TextEditingController(text: "01");
+  TextEditingController _yearOfMarriage = TextEditingController(text: "1901");
+
   String gender="Male";
   String groupvalue = "Male";
+
+  String married="Married";
+  String marriedvalue = "Married";
+
   bool hidePass = true;
   bool loading = false;
 
+  String _error=null;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +65,7 @@ class _SignUpState extends State<SignUp> {
                 width: 280.0,
                 height: 240.0,
               )),
+          showAlert(),
           Center(
             child: Padding(
               padding: const EdgeInsets.only(top: 200.0),
@@ -287,14 +301,256 @@ class _SignUpState extends State<SignUp> {
                             ),
                           ),
                         ),
-                        // =================== DOB ===================
 
+                        // =================== DOB ===================
                         Padding(
                           padding:
                           const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
-                          child: Text("Yo",style: TextStyle(color: Colors.white),),
+                          child: Text("Date Of Birth",style: TextStyle(color: Colors.white,fontSize: 16.0,fontWeight: FontWeight.bold),),
                         ),
 
+                        Padding(
+                            padding:
+                            const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(0.0),
+                                  child: Container(
+                                    width: 70.0,
+                                    height: 45.0,
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: Colors.white.withOpacity(0.4),
+                                      elevation: 0.0,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 12.0),
+                                        child: TextFormField(
+                                          controller: _dateOfBirth,
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: <TextInputFormatter>[
+                                            WhitelistingTextInputFormatter.digitsOnly
+                                          ],
+                                          decoration: InputDecoration(
+                                            hintText: "Date",
+                                          ),
+                                          validator: (value) {
+                                            if (value.isEmpty) {
+                                              return "Invalid";
+                                            }else if(value.length >2){
+                                              return "Invalid";
+                                            }else if(int.parse(value) >31){
+                                              return "Invalid";
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(8.0,0,0,0),
+                                  child: Container(
+                                    width: 70.0,
+                                    height: 45.0,
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: Colors.white.withOpacity(0.4),
+                                      elevation: 0.0,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 12.0),
+                                        child: TextFormField(
+                                          controller: _monthOfBirth,
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: <TextInputFormatter>[
+                                            WhitelistingTextInputFormatter.digitsOnly
+                                          ],
+                                          decoration: InputDecoration(
+                                            hintText: "Month",
+                                          ),
+                                          validator: (value) {
+                                            if (value.isEmpty) {
+                                              return "Invalid";
+                                            }else if(value.length >2){
+                                              return "Invalid";
+                                            }else if(int.parse(value) >12){
+                                              return "Invalid";
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(8.0,0,0,0),
+                                  child: Container(
+                                    width: 100.0,
+                                    height: 45.0,
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: Colors.white.withOpacity(0.4),
+                                      elevation: 0.0,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 12.0),
+                                        child: TextFormField(
+                                          controller: _yearOfBirth,
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: <TextInputFormatter>[
+                                            WhitelistingTextInputFormatter.digitsOnly
+                                          ],
+                                          decoration: InputDecoration(
+                                            hintText: "Year",
+                                          ),
+                                          validator: (value) {
+                                            if (value.isEmpty) {
+                                              return "Invalid";
+                                            }else if(value.length >4){
+                                              return "Invalid";
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                        ),
+
+                        // ====================== Relationship Status ======================
+                        Padding(
+                          padding:
+                          const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                          child: new Container(
+                            color: Colors.white.withOpacity(0.4),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                    child: ListTile(
+                                        title: Text("Married",
+                                          textAlign: TextAlign.end,
+                                          style: TextStyle(color: Colors.white),
+                                        )
+                                        ,trailing: Radio(
+                                      value: "Married",groupValue: marriedvalue,
+                                      onChanged: (e)=>marriedvalueChanged(e),)
+                                    )
+                                ),
+
+                                Expanded(
+                                    child: ListTile(
+                                        title: Text("Single",
+                                          textAlign: TextAlign.end,
+                                          style: TextStyle(color: Colors.white),
+                                        )
+                                        ,trailing: Radio(
+                                      value: "Single",groupValue: marriedvalue,
+                                      onChanged: (e)=>marriedvalueChanged(e),)
+                                    )
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // =================== Anniversary ===================
+                        Padding(
+                          padding:
+                          const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                          child: Text("Marriage Anniversary (Optional)",style: TextStyle(color: Colors.white,fontSize: 16.0,fontWeight: FontWeight.bold),),
+                        ),
+
+                        Padding(
+                            padding:
+                            const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(0.0),
+                                  child: Container(
+                                    width: 70.0,
+                                    height: 45.0,
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: Colors.white.withOpacity(0.4),
+                                      elevation: 0.0,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 12.0),
+                                        child: TextFormField(
+                                          controller: _dateOfMarriage,
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: <TextInputFormatter>[
+                                            WhitelistingTextInputFormatter.digitsOnly
+                                          ],
+                                          decoration: InputDecoration(
+                                            hintText: "Date",
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(8.0,0,0,0),
+                                  child: Container(
+                                    width: 70.0,
+                                    height: 45.0,
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: Colors.white.withOpacity(0.4),
+                                      elevation: 0.0,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 12.0),
+                                        child: TextFormField(
+                                          controller: _monthOfMarriage,
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: <TextInputFormatter>[
+                                            WhitelistingTextInputFormatter.digitsOnly
+                                          ],
+                                          decoration: InputDecoration(
+                                            hintText: "Month",
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(8.0,0,0,0),
+                                  child: Container(
+                                    width: 100.0,
+                                    height: 45.0,
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: Colors.white.withOpacity(0.4),
+                                      elevation: 0.0,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 12.0),
+                                        child: TextFormField(
+                                          controller: _yearOfMarriage,
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: <TextInputFormatter>[
+                                            WhitelistingTextInputFormatter.digitsOnly
+                                          ],
+                                          decoration: InputDecoration(
+                                            hintText: "Year",
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                        ),
 
 
                         // ====================== REGISTRATION BUTTON ======================
@@ -308,6 +564,7 @@ class _SignUpState extends State<SignUp> {
                               child: MaterialButton(
                                 onPressed: () async{
                                   validateForm();
+                                  FocusScope.of(context).requestFocus(FocusNode());
                                 },
                                 minWidth: MediaQuery.of(context).size.width,
                                 child: Text(
@@ -363,6 +620,48 @@ class _SignUpState extends State<SignUp> {
     });
   }
 
+  marriedvalueChanged(e) {
+    setState(() {
+      if (e == "Married"){
+        marriedvalue=e;
+        married=e;
+      }else if(e =="Single"){
+        marriedvalue=e;
+        married=e;
+      }
+    });
+  }
+
+  Widget showAlert(){
+    if(_error!=null){
+      return Container(
+        color: Colors.amberAccent,
+        width: double.infinity,
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(8.0),
+                child: Icon(Icons.error_outline)),
+            Expanded(child: Text("Form Improperly filled!"),),
+            Padding(
+              padding: EdgeInsets.only(left:8.0),
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: (){
+                  setState(() {
+                    _error=null;
+                  });
+                },
+              ),
+            )
+          ],
+        ),
+      );
+    }
+    return SizedBox(height: 0,);
+  }
+
   Future validateForm() async {
     FormState formState = _formKey.currentState;
 
@@ -372,62 +671,60 @@ class _SignUpState extends State<SignUp> {
 
 
       if (user == null) {
-        firebaseAuth
-            .createUserWithEmailAndPassword(
-            email: _emailTextController.text,
-            password: _passwordTextController.text)
-            .then(
-              (user) => Firestore.instance.collection("users").add({
-                "First Name": _firstnameTextController.text,
-                "Last Name": _lastnameTextController.text,
-                "email": _emailTextController.text,
-                "userId": user.user.uid,
-                "phone":   _phoneNumberController.text,
-                "gender": gender,
-                "username": _firstnameTextController.text + " " + _lastnameTextController.text,
-          }),
-        )
-            .catchError(
-              (err) => print(
-            err.toString(),
-          ),
-        );
-
-
+        if(married=="Married") {
+          firebaseAuth.createUserWithEmailAndPassword(
+              email: _emailTextController.text,
+              password: _passwordTextController.text)
+              .then(
+                (user) =>
+                Firestore.instance.collection("users").add({
+                  "firstName": _firstnameTextController.text,
+                  "lastName": _lastnameTextController.text,
+                  "email": _emailTextController.text,
+                  "userId": user.user.uid,
+                  "phone": int.parse(_phoneNumberController.text),
+                  "gender": gender,
+                  "username": "${_firstnameTextController.text}" + " " +
+                      "${_lastnameTextController.text}",
+                  "dateOfBirth": DateTime.parse("${_yearOfBirth.text}" + "-" + "${_monthOfBirth.text}" + "-" + "${_dateOfBirth.text}"),
+                  "married":married,
+                  "anniversary": DateTime.parse("${_yearOfMarriage.text}" + "-" + "${_monthOfMarriage.text}" + "-" + "${_dateOfMarriage.text}")
+                }),
+          ).catchError((err) => print(err.toString(),),
+          );
+        }else{
+          firebaseAuth.createUserWithEmailAndPassword(
+              email: _emailTextController.text,
+              password: _passwordTextController.text)
+              .then(
+                (user) =>
+                Firestore.instance.collection("users").add({
+                  "firstName": _firstnameTextController.text,
+                  "lastName": _lastnameTextController.text,
+                  "email": _emailTextController.text,
+                  "userId": user.user.uid,
+                  "phone": int.parse(_phoneNumberController.text),
+                  "gender": gender,
+                  "username": "${_firstnameTextController.text}" + " " +
+                      "${_lastnameTextController.text}",
+                  "dateOfBirth": DateTime.parse("${_yearOfBirth.text}" + "-" + "${_monthOfBirth.text}" + "-" + "${_dateOfBirth.text}"),
+                  "married":married,
+                }),
+          ).catchError((err) {
+           print(err.toString());
+             _error = err.toString();
+          });
+        }
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
             ModalRoute.withName(HomePage().toString()));
+
       } else {
         print("already a user");
       }
     }
   }
+
+
 }
-  /*
-  Future validateForm() async{
-    FormState formState = _formKey.currentState;
-
-    if(formState.validate()){
-      formState.reset();
-      FirebaseUser user = await firebaseAuth.currentUser();
-      if(user == null){
-        firebaseAuth.createUserWithEmailAndPassword(
-            email: _emailTextController.text,
-            password: _passwordTextController.text).then((user) => {
-
-              _userServices.createUser(
-                  {
-                  "username": _nameTextController.text,
-                  "email": _emailTextController.text,
-                  "userId": user.user.uid,
-                  "gender": gender,
-              }
-              )
-        }).catchError((err)=>print(err.toString()));
-
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
-      }
-    }
-  }*/
