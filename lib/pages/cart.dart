@@ -12,7 +12,6 @@ class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: new AppBar(
         elevation: 0.1,
         backgroundColor: Colors.red,
