@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:karigari/HomePage.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:karigari/components/loading.dart';
 import 'package:karigari/db/auth.dart';
 
 
@@ -50,7 +51,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height / 3;
-    return Scaffold(
+    return loading ? Loading() : Scaffold(
       body: Stack(
         children: <Widget>[
           Image.asset(
@@ -569,6 +570,9 @@ class _SignUpState extends State<SignUp> {
                               elevation: 0.0,
                               child: MaterialButton(
                                 onPressed: () async{
+                                  setState(() {
+                                    loading = true;
+                                  });
                                   validateForm();
                                   FocusScope.of(context).requestFocus(FocusNode());
                                 },
@@ -668,6 +672,7 @@ class _SignUpState extends State<SignUp> {
             _emailTextController.text, _passwordTextController.text, data_map);
         if (result == null) {
           setState(() {
+            loading =false;
             _error = 'Invalid Form Entry or Field left empty';
             print(_error);
 
@@ -675,6 +680,7 @@ class _SignUpState extends State<SignUp> {
         }
         else if (result =="ERROR_EMAIL_ALREADY_IN_USE") {
           setState(() {
+            loading = false;
             _error='Email Already in Use!';
           });
         }

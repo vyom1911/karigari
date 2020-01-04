@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:karigari/pages/signup.dart';
+import 'package:karigari/components/loading.dart';
 import 'package:karigari/db/auth.dart';
 
 class Login extends StatefulWidget {
@@ -16,7 +16,7 @@ class _LoginState extends State<Login> {
 
   final Auth auth = Auth();
 
-
+  bool loading = false;
 
   Future handleSignIn() async {
 
@@ -24,7 +24,7 @@ class _LoginState extends State<Login> {
      dynamic result = await auth.signInWithEmailAndPassword( _emailTextController.text.trim(), _passwordTextController.text.trim());
      if(result==null){
        print("ERROR SIGNING IN!");
-       return showAlert();
+       setState(() => loading =false);
      }
      else{
        print("SIGNED IN");
@@ -66,7 +66,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height / 3;
-    return Scaffold(
+    return loading ? Loading() : Scaffold(
       body: Stack(
         children: <Widget>[
           Image.asset(
@@ -161,7 +161,9 @@ class _LoginState extends State<Login> {
                               color: Colors.red.shade700,
                               elevation: 0.0,
                               child: MaterialButton(
-                                onPressed: () {handleSignIn();
+                                onPressed: () {
+                                  setState(() => loading=true);
+                                  handleSignIn();
                                 FocusScope.of(context).requestFocus(FocusNode());
                                 },
                                 minWidth: MediaQuery.of(context).size.width,
