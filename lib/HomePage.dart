@@ -1,12 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
-//my own package import
-//import 'package:karigari/components/horizontal_listview.dart';
 import 'package:karigari/components/Categories.dart';
+import 'package:karigari/db/auth.dart';
 import 'package:karigari/pages/cart.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:karigari/pages/login.dart';
-
+import 'package:karigari/db/user.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,8 +14,39 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final Auth _auth =Auth();
+  User current_user;
+  Map user_details;
+
+  void getUserData(User current_user) async {
+    QuerySnapshot snapshot = await Firestore.instance.collection("users").where("userId",isEqualTo: current_user.uid).getDocuments();
+
+    List<DocumentSnapshot> documents= snapshot.documents;
+    var user_detail_map = {
+      "firstName": documents[0]["firstName"],
+      "lastName": documents[0]["lastName"],
+      "email": documents[0]["email"],
+      "userId": documents[0]["userId"],
+      "phone": documents[0]["phone"],
+      "gender":documents[0]["gender"],
+      "username": documents[0]["username"],
+      "dateOfBirth": documents[0]["dateOfBirth"],
+      "married":documents[0]["married"],
+    };
+    setState(() {
+      user_details=user_detail_map;
+    });
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    //get current user and data first
+    current_user =Provider.of<User>(context);
+    getUserData(current_user);
+
+    //Build the page
     Widget image_carousel = new Container(
       height: 400.0,
       child: Carousel(
@@ -54,8 +85,8 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             //header
             new UserAccountsDrawerHeader(
-              accountName: Text('Prachal Neema'),
-              accountEmail: Text('prachalneema123@gmail.com'),
+              accountName: Text(user_details["username"]),
+              accountEmail: Text(user_details["email"]),
               currentAccountPicture: GestureDetector(
                   child: CircleAvatar(
                       backgroundColor: Colors.grey,
@@ -121,10 +152,11 @@ class _HomePageState extends State<HomePage> {
             Divider(),
 
             InkWell(
-              onTap: (){
-                FirebaseAuth.instance.signOut().then((value){
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
-                });
+              onTap: () async {
+                print("Signout");
+
+               await _auth.signOut();
+              //widget._signOut();
               },
               child: ListTile(
                 title: Text('Log out'),

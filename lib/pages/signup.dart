@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:karigari/HomePage.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:karigari/db/auth.dart';
 
 
 

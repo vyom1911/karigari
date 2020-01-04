@@ -1,68 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:karigari/HomePage.dart';
 import 'package:karigari/pages/signup.dart';
 import 'package:karigari/db/auth.dart';
 
 class Login extends StatefulWidget {
-  Login({this.auth});
-  final BaseAuth auth;
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
 
-  SharedPreferences preferences;
-  bool loading = false;
-  bool isLogedin = false;
-
-  @override
-  void initState() {
-    super.initState();
-//    isSignedIn();
-  }
-
-  void isSignedIn() async {
-    setState(() {
-      loading = true;
-    });
+  final Auth auth = Auth();
 
 
-    if (isLogedin) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
-    }
-
-    setState(() {
-      loading = false;
-    });
-  }
 
   Future handleSignIn() async {
 
     try {
-      String userId = await widget.auth.signInWithEmailAndPassword( _emailTextController.text.trim(), _passwordTextController.text.trim());
-
-      if (userId!=null) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
-      }
-      else{
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Login()));
-      }
+     dynamic result = await auth.signInWithEmailAndPassword( _emailTextController.text.trim(), _passwordTextController.text.trim());
+     if(result==null){
+       print("ERROR SIGNING IN!");
+       return showAlert();
+     }
+     else{
+       print("SIGNED IN");
+     }
     }
     catch(e){
-      print("Error: $e");
+      print("Error in HandleSignIn: ${e.toString()}");
     }
 
   }
@@ -192,7 +159,9 @@ class _LoginState extends State<Login> {
                               color: Colors.red.shade700,
                               elevation: 0.0,
                               child: MaterialButton(
-                                onPressed: () {handleSignIn();},
+                                onPressed: () {handleSignIn();
+                                FocusScope.of(context).requestFocus(FocusNode());
+                                },
                                 minWidth: MediaQuery.of(context).size.width,
                                 child: Text(
                                   "Login",
@@ -230,18 +199,6 @@ class _LoginState extends State<Login> {
               ),
             ),
           ),
-          Visibility(
-            visible: loading ?? true,
-            child: Center(
-              child: Container(
-                alignment: Alignment.center,
-                color: Colors.white.withOpacity(0.9),
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                ),
-              ),
-            ),
-          )
         ],
       ),
     );
