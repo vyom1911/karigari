@@ -3,6 +3,8 @@ import 'package:karigari/pages/signup.dart';
 import 'package:karigari/db/auth.dart';
 
 class Login extends StatefulWidget {
+  final Function toggleView;
+  Login({this.toggleView});
   @override
   _LoginState createState() => _LoginState();
 }
@@ -190,9 +192,9 @@ class _LoginState extends State<Login> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+                                  widget.toggleView();
                                 },
-                                child: Text("Sign up", textAlign: TextAlign.center, style: TextStyle(color: Colors.red),))
+                                child: Text("Sign up", textAlign: TextAlign.center, style: TextStyle(color: Colors.red,fontSize: 15.0),))
                         ),
                       ],
                     )),

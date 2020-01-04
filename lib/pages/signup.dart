@@ -9,11 +9,16 @@ import 'package:karigari/db/auth.dart';
 
 
 class SignUp extends StatefulWidget {
+
+  final Function toggleView;
+  SignUp({this.toggleView});
+
   @override
   _SignUpState createState() => _SignUpState();
 }
 
 class _SignUpState extends State<SignUp> {
+  final Auth _auth = Auth();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailTextController = TextEditingController();
@@ -583,27 +588,17 @@ class _SignUpState extends State<SignUp> {
                             padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                                 onTap: (){
-                                  Navigator.pop(context);
+                                  widget.toggleView();
                                 },
-                                child: Text("Login",textAlign: TextAlign.center, style: TextStyle(color: Colors.red),))
+                                child: Text("Login",textAlign: TextAlign.center, style: TextStyle(color: Colors.red,fontSize: 15.0),))
                         ),
                       ],
                     )),
               ),
             ),
+
           ),
-          Visibility(
-            visible: loading ?? true,
-            child: Center(
-              child: Container(
-                alignment: Alignment.center,
-                color: Colors.white.withOpacity(0.9),
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                ),
-              ),
-            ),
-          )
+
         ],
       ),
     );
@@ -633,6 +628,60 @@ class _SignUpState extends State<SignUp> {
     });
   }
 
+
+
+  Future validateForm() async {
+    FormState formState = _formKey.currentState;
+
+
+    if (formState.validate()) {
+
+      var data_map;
+      if(married=="Married") {
+        data_map = {
+                "firstName": _firstnameTextController.text,
+                "lastName": _lastnameTextController.text,
+                "email": _emailTextController.text,
+                "phone": int.parse(_phoneNumberController.text),
+                "gender": gender,
+                "username": "${_firstnameTextController.text}" + " " +
+                    "${_lastnameTextController.text}",
+                "dateOfBirth": DateTime.parse("${_yearOfBirth.text}" + "-" + "${_monthOfBirth.text}" + "-" + "${_dateOfBirth.text}"),
+                "married":married,
+                "anniversary": DateTime.parse("${_yearOfMarriage.text}" + "-" + "${_monthOfMarriage.text}" + "-" + "${_dateOfMarriage.text}")
+              };
+      }else{
+          data_map = {
+                "firstName": _firstnameTextController.text,
+                "lastName": _lastnameTextController.text,
+                "email": _emailTextController.text,
+                "phone": int.parse(_phoneNumberController.text),
+                "gender": gender,
+                "username": "${_firstnameTextController.text}" + " " +
+                    "${_lastnameTextController.text}",
+                "dateOfBirth": DateTime.parse("${_yearOfBirth.text}" + "-" + "${_monthOfBirth.text}" + "-" + "${_dateOfBirth.text}"),
+                "married":married,
+              };
+      }
+
+        dynamic result = await _auth.registerWithEmailAndPassword(
+            _emailTextController.text, _passwordTextController.text, data_map);
+        if (result == null) {
+          setState(() {
+            _error = 'Invalid Form Entry or Field left empty';
+            print(_error);
+
+          });
+        }
+        else if (result =="ERROR_EMAIL_ALREADY_IN_USE") {
+          setState(() {
+            _error='Email Already in Use!';
+          });
+        }
+
+
+    }
+  }
   Widget showAlert(){
     if(_error!=null){
       return Container(
@@ -642,9 +691,9 @@ class _SignUpState extends State<SignUp> {
         child: Row(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.0),
                 child: Icon(Icons.error_outline)),
-            Expanded(child: Text("Form Improperly filled!"),),
+            Expanded(child: Text(_error),),
             Padding(
               padding: EdgeInsets.only(left:8.0),
               child: IconButton(
@@ -661,70 +710,6 @@ class _SignUpState extends State<SignUp> {
       );
     }
     return SizedBox(height: 0,);
-  }
-
-  Future validateForm() async {
-    FormState formState = _formKey.currentState;
-
-
-    if (formState.validate()) {
-      FirebaseUser user = await firebaseAuth.currentUser();
-
-
-      if (user == null) {
-        if(married=="Married") {
-          firebaseAuth.createUserWithEmailAndPassword(
-              email: _emailTextController.text,
-              password: _passwordTextController.text)
-              .then(
-                (user) =>
-                Firestore.instance.collection("users").add({
-                  "firstName": _firstnameTextController.text,
-                  "lastName": _lastnameTextController.text,
-                  "email": _emailTextController.text,
-                  "userId": user.user.uid,
-                  "phone": int.parse(_phoneNumberController.text),
-                  "gender": gender,
-                  "username": "${_firstnameTextController.text}" + " " +
-                      "${_lastnameTextController.text}",
-                  "dateOfBirth": DateTime.parse("${_yearOfBirth.text}" + "-" + "${_monthOfBirth.text}" + "-" + "${_dateOfBirth.text}"),
-                  "married":married,
-                  "anniversary": DateTime.parse("${_yearOfMarriage.text}" + "-" + "${_monthOfMarriage.text}" + "-" + "${_dateOfMarriage.text}")
-                }),
-          ).catchError((err) => print(err.toString(),),
-          );
-        }else{
-          firebaseAuth.createUserWithEmailAndPassword(
-              email: _emailTextController.text,
-              password: _passwordTextController.text)
-              .then(
-                (user) =>
-                Firestore.instance.collection("users").add({
-                  "firstName": _firstnameTextController.text,
-                  "lastName": _lastnameTextController.text,
-                  "email": _emailTextController.text,
-                  "userId": user.user.uid,
-                  "phone": int.parse(_phoneNumberController.text),
-                  "gender": gender,
-                  "username": "${_firstnameTextController.text}" + " " +
-                      "${_lastnameTextController.text}",
-                  "dateOfBirth": DateTime.parse("${_yearOfBirth.text}" + "-" + "${_monthOfBirth.text}" + "-" + "${_dateOfBirth.text}"),
-                  "married":married,
-                }),
-          ).catchError((err) {
-           print(err.toString());
-             _error = err.toString();
-          });
-        }
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-            ModalRoute.withName(HomePage().toString()));
-
-      } else {
-        print("already a user");
-      }
-    }
   }
 
 

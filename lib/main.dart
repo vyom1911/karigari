@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:karigari/HomePage.dart';
 import 'package:karigari/db/auth.dart';
 import 'package:karigari/db/user.dart';
-import 'package:karigari/pages/login.dart';
 import 'package:karigari/wrapper.dart';
 import 'package:provider/provider.dart';
 

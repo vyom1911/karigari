@@ -43,7 +43,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     //get current user and data first
+    //current_user=null;
     current_user =Provider.of<User>(context);
+
+//    user_details = {
+//      "username": "abc",
+//      "email": "g@gmail.com"
+//    };
     getUserData(current_user);
 
     //Build the page
