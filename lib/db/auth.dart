@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:karigari/db/database.dart';
 import 'package:karigari/db/user.dart';
 
 
@@ -25,9 +26,16 @@ class Auth{
       print('Signed in: ${user.uid}');
       //return user;
       return _userFromFirebaseUser(user);
-    } catch(e){
+    } catch(e) {
       print("Error in AuthSignIn: " + e.toString());
+
+      if (e.toString().contains("ERROR_USER_NOT_FOUND")) {
+          return "ERROR_USER_NOT_FOUND";
+      } else if (e.toString().contains("ERROR_WRONG_PASSWORD")){
+          return "ERROR_WRONG_PASSWORD";
+      }else{
       return null;
+      }
     }
   }
 
@@ -36,10 +44,11 @@ class Auth{
 
       AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
+      //user.updateProfile({displayName: })
       print("User uid: " + user.uid);
 
       data_map.putIfAbsent("userId", () => user.uid);
-      Firestore.instance.collection("users").add(data_map);
+      await DatabaseService(uid: user.uid).updateUserData(data_map);
 
       return _userFromFirebaseUser(user);
 

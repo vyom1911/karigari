@@ -20,7 +20,6 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final Auth _auth = Auth();
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
@@ -670,6 +669,7 @@ class _SignUpState extends State<SignUp> {
 
         dynamic result = await _auth.registerWithEmailAndPassword(
             _emailTextController.text, _passwordTextController.text, data_map);
+
         if (result == null) {
           setState(() {
             loading =false;
@@ -684,8 +684,6 @@ class _SignUpState extends State<SignUp> {
             _error='Email Already in Use!';
           });
         }
-
-
     }
   }
   Widget showAlert(){

@@ -18,26 +18,26 @@ class _HomePageState extends State<HomePage> {
   User current_user;
   Map user_details;
 
-  void getUserData(User current_user) async {
-    QuerySnapshot snapshot = await Firestore.instance.collection("users").where("userId",isEqualTo: current_user.uid).getDocuments();
-
-    List<DocumentSnapshot> documents= snapshot.documents;
-    var user_detail_map = {
-      "firstName": documents[0]["firstName"],
-      "lastName": documents[0]["lastName"],
-      "email": documents[0]["email"],
-      "userId": documents[0]["userId"],
-      "phone": documents[0]["phone"],
-      "gender":documents[0]["gender"],
-      "username": documents[0]["username"],
-      "dateOfBirth": documents[0]["dateOfBirth"],
-      "married":documents[0]["married"],
-    };
-    setState(() {
-      user_details=user_detail_map;
-    });
-
-  }
+//  void getUserData(User current_user) async {
+//    QuerySnapshot snapshot = await Firestore.instance.collection("users").where("userId",isEqualTo: current_user.uid).getDocuments();
+//
+//    List<DocumentSnapshot> documents= snapshot.documents;
+//    var user_detail_map = {
+//      "firstName": documents[0]["firstName"],
+//      "lastName": documents[0]["lastName"],
+//      "email": documents[0]["email"],
+//      "userId": documents[0]["userId"],
+//      "phone": documents[0]["phone"],
+//      "gender":documents[0]["gender"],
+//      "username": documents[0]["username"],
+//      "dateOfBirth": documents[0]["dateOfBirth"],
+//      "married":documents[0]["married"],
+//    };
+//    setState(() {
+//      user_details=user_detail_map;
+//    });
+//
+//  }
 
 
   @override
@@ -46,11 +46,7 @@ class _HomePageState extends State<HomePage> {
     //current_user=null;
     current_user =Provider.of<User>(context);
 
-//    user_details = {
-//      "username": "abc",
-//      "email": "g@gmail.com"
-//    };
-    getUserData(current_user);
+    //getUserData(current_user);
 
     //Build the page
     Widget image_carousel = new Container(
@@ -91,8 +87,8 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             //header
             new UserAccountsDrawerHeader(
-              accountName: Text(user_details["username"]),
-              accountEmail: Text(user_details["email"]),
+              accountName: Text(current_user.uid),
+              accountEmail: Text("email"),
               currentAccountPicture: GestureDetector(
                   child: CircleAvatar(
                       backgroundColor: Colors.grey,

@@ -15,7 +15,7 @@ class _LoginState extends State<Login> {
   TextEditingController _passwordTextController = TextEditingController();
 
   final Auth auth = Auth();
-
+  String _error = null;
   bool loading = false;
 
   Future handleSignIn() async {
@@ -23,8 +23,24 @@ class _LoginState extends State<Login> {
     try {
      dynamic result = await auth.signInWithEmailAndPassword( _emailTextController.text.trim(), _passwordTextController.text.trim());
      if(result==null){
-       print("ERROR SIGNING IN!");
-       setState(() => loading =false);
+
+       setState(() {
+         loading = false;
+         _error = "ERROR SIGNING IN!";
+         print(_error);
+       });
+     }else if(result =="ERROR_USER_NOT_FOUND"){
+       setState(() {
+         loading=false;
+         _error = "USER NOT FOUND!";
+         print(_error);
+       });
+     }else if(result == "ERROR_WRONG_PASSWORD") {
+       setState(() {
+         loading=false;
+         _error = "Wrong Password";
+         print(_error);
+       });
      }
      else{
        print("SIGNED IN");
@@ -36,6 +52,7 @@ class _LoginState extends State<Login> {
 
   }
   Widget showAlert(){
+    if(_error!=null){
       return Container(
         color: Colors.amberAccent,
         width: double.infinity,
@@ -45,21 +62,22 @@ class _LoginState extends State<Login> {
             Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Icon(Icons.error_outline)),
-            Expanded(child: Text("User Not Found, Please Register!"),),
+            Expanded(child: Text(_error),),
             Padding(
               padding: EdgeInsets.only(left:8.0),
               child: IconButton(
                 icon: Icon(Icons.close),
                 onPressed: (){
-                    Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (context) => Login()));
+                  setState(() {
+                    _error=null;
+                  });
                 },
               ),
             )
           ],
         ),
       );
-
+    }
     return SizedBox(height: 0,);
   }
 
@@ -69,12 +87,14 @@ class _LoginState extends State<Login> {
     return loading ? Loading() : Scaffold(
       body: Stack(
         children: <Widget>[
+
           Image.asset(
             'images/back.jpeg',
             fit: BoxFit.fill,
             width: double.infinity,
             height: double.infinity,
           ),
+
           Container(
             color: Colors.black.withOpacity(0.8),
             width: double.infinity,
@@ -87,6 +107,7 @@ class _LoginState extends State<Login> {
                 width: 280.0,
                 height: 240.0,
               )),
+          showAlert(),
           Center(
             child: Padding(
               padding: const EdgeInsets.only(top: 200.0),
