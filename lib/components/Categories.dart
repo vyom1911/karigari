@@ -1,35 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:karigari/pages/product_details.dart';
+import 'package:karigari/db/category_list.dart';
 import 'package:karigari/pages/Subcategory.dart';
+import 'package:provider/provider.dart';
 class Category extends StatefulWidget {
   @override
   _CategoryState createState() => _CategoryState();
 }
 
 class _CategoryState extends State<Category> {
-  var product_list = [
-    {
-      "name": "Bangle",
-      "picture": "images/products/Bangles.jpeg",
-    },
-    {
-      "name": "Ring",
-      "picture": "images/products/Ring.png",
-    }
-  ];
+
+
+
 
   @override
   Widget build(BuildContext context) {
+    final categories = Provider.of<List<Category_List>>(context);
+
+
 
     return GridView.builder(
-        itemCount: product_list.length,
+        itemCount: categories.length,
         gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2),
         itemBuilder: (BuildContext context, int index) {
           return Padding( padding: const EdgeInsets.all(4.0),
             child: Single_prod(
-              product_name: product_list[index]['name'],
-              prod_pictures: product_list[index]['picture'],
+              product_name: categories[index].name,
+              prod_pictures: categories[index].picture,
             ),
           );
         }

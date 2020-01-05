@@ -1,6 +1,7 @@
 import 'package:karigari/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:karigari/db/authenticate.dart';
+import 'package:karigari/db/database.dart';
 import 'package:karigari/pages/login.dart';
 import 'package:provider/provider.dart';
 import 'package:karigari/db/user.dart';
@@ -15,7 +16,10 @@ class Wrapper extends StatelessWidget {
       return Authenticate();
     }
     else{
-      return HomePage();
+      return StreamProvider<UserData>.value(
+          value: DatabaseService(uid: user.uid).userData,
+          child: HomePage()
+      );
     }
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:karigari/HomePage.dart';
 import 'package:karigari/db/auth.dart';
 import 'package:karigari/db/user.dart';
 import 'package:karigari/wrapper.dart';
@@ -17,7 +16,6 @@ void main(){
           primaryColor: Colors.red.shade900
         ),
         home: new Wrapper(),
-        //home: new HomePage(),
       ),
     )
   );
