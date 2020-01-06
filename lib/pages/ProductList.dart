@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:karigari/pages/product_details.dart';
 import 'package:karigari/HomePage.dart';
 import 'package:karigari/pages/cart.dart';
 class ProductList extends StatefulWidget {
+  final String subcat_id;
+  final String cat_id;
+  ProductList({this.subcat_id,this.cat_id});
   @override
   _ProductListState createState() => _ProductListState();
 }
@@ -28,34 +32,53 @@ class _ProductListState extends State<ProductList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: new AppBar(
-          elevation: 0.1,
-          backgroundColor: Colors.red,
-          title: Center(
-            child: InkWell( onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context)=> new HomePage()));},
-                child: Text('Karigari')),
-          ),
-          actions: <Widget>[
-            new IconButton(icon: Icon(Icons.search, color:Colors.white), onPressed: (){}),
-            new IconButton(icon: Icon(Icons.shopping_cart, color:Colors.white), onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>new Cart()));
-            })
-          ],
-        ),
+    return StreamBuilder(
+      stream: Firestore.instance.collection("categories").document(widget.cat_id).collection("subcategories").document(widget.subcat_id).collection("products").snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container(
+              child: Center(
+                  child: Text("No Subcategories \n listed yet",
+                    style: TextStyle(fontSize: 30.0),)
+              )
+          );
+        }
+        else {
+          return Scaffold(
+              appBar: new AppBar(
+                elevation: 0.1,
+                backgroundColor: Colors.red,
+                title: Center(
+                  child: InkWell(onTap: () {},
+                      child: Text('Karigari')),
+                ),
+                actions: <Widget>[
+                  new IconButton(icon: Icon(Icons.search, color: Colors.white),
+                      onPressed: () {}),
+                  new IconButton(
+                      icon: Icon(Icons.shopping_cart, color: Colors.white),
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => new Cart()));
+                      })
+                ],
+              ),
 
-        body: GridView.builder(
-            itemCount: product_list.length,
-            gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2),
-            itemBuilder: (BuildContext context, int index) {
-              return Single_cat(
-                product_name: product_list[index]['name'],
-                prod_pictures: product_list[index]['picture'],
-                prod_price: product_list[index]['price'],
-              );
-            }
-        )
+              body: GridView.builder(
+                  itemCount: snapshot.data.documents.length,
+                  gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Single_cat(
+                      product_name: snapshot.data.documents[index]['product_name'],
+                      prod_pictures: snapshot.data.documents[index]['product_picture'],
+                      prod_price: snapshot.data.documents[index]['price'],
+                    );
+                  }
+              )
+          );
+        }
+      }
     );
   }
 }

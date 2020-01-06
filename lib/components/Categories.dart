@@ -28,6 +28,7 @@ class _CategoryState extends State<Category> {
             child: Single_prod(
               product_name: categories[index].name,
               prod_pictures: categories[index].picture,
+              product_id: categories[index].id,
             ),
           );
         }
@@ -38,12 +39,11 @@ class _CategoryState extends State<Category> {
 class Single_prod extends StatelessWidget {
   final product_name;
   final prod_pictures;
-  final prod_price;
-
+  final product_id;
   Single_prod({
     this.product_name,
     this.prod_pictures,
-    this.prod_price
+    this.product_id
   });
 
   @override
@@ -55,7 +55,7 @@ class Single_prod extends StatelessWidget {
               //On tap opens product description, change later to product sub category
 
               onTap: () => Navigator.of(context).push(
-                  new MaterialPageRoute(builder: (context) => new Subcategory()
+                  new MaterialPageRoute(builder: (context) => new Subcategory(category: product_name,id:product_id)
                   )),
               child: GridTile(
                   footer: Container(

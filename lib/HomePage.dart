@@ -26,14 +26,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     //get current user and data first
-    //current_user=null;
 
     current_user = Provider.of<User>(context);
     userData = Provider.of<UserData>(context);
-    //print(userData.email);
-    //final all_users = Provider.of<QuerySnapshot>(context);
-    //print(all_users);
-    //getUserData(current_user);
+
+
     //Build the page
     Widget image_carousel = new Container(
       height: 400.0,
@@ -162,7 +159,12 @@ class _HomePageState extends State<HomePage> {
 
             //Padding_widget
             new Padding(padding: const EdgeInsets.all(20.0),
-            child: Center(child: Text('Categories',style: TextStyle(fontWeight: FontWeight.w800,fontSize: 20))),),
+              child: Center(
+                  child: Text('Categories',
+                      style: TextStyle(fontWeight: FontWeight.w800,fontSize: 20)
+                  )
+              )
+            ),
 
             //Horizontal list view begins here
            // HorizontalList()
