@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:karigari/pages/ProductList.dart';
 import 'package:karigari/HomePage.dart';
 import 'package:karigari/pages/cart.dart';
-import 'package:provider/provider.dart';
-import 'package:karigari/db/category_list.dart';
+
 
 class Subcategory extends StatefulWidget {
   final String category ;
@@ -16,12 +15,6 @@ class Subcategory extends StatefulWidget {
 }
 
 class _SubcategoryState extends State<Subcategory> {
-
-//  getSubcategoryList() async{
-//    QuerySnapshot querySnapshot = await Firestore.instance.collection("categories").document(widget.id).collection("subcategories").getDocuments();
-//    var list = querySnapshot.documents.map(f);
-//    return list.;
-//  }
 
   var product_list = [
     {
@@ -46,15 +39,6 @@ class _SubcategoryState extends State<Subcategory> {
   @override
   Widget build(BuildContext context) {
     List<String> prod_test=[];
-/*
-    Firestore.instance.collection("categories").document(widget.id).collection("subcategories").getDocuments()
-        .then((QuerySnapshot snapshot) {
-      snapshot.documents.forEach((f) =>
-          print((f.data.toString()))
-      );
-    });
-*/
-
 
 
     return StreamBuilder(
@@ -75,7 +59,7 @@ class _SubcategoryState extends State<Subcategory> {
                 backgroundColor: Colors.red,
                 title: Center(
                   child: InkWell(onTap: () {},
-                      child: Text('Karigari')),
+                      child: Text('Subcategories')),
                 ),
                 actions: <Widget>[
                   new IconButton(icon: Icon(Icons.search, color: Colors.white),
@@ -111,7 +95,7 @@ class _SubcategoryState extends State<Subcategory> {
 
 class Single_cat extends StatelessWidget {
   final product_name;
-  final prod_pictures;
+  String prod_pictures;
   final subcat_id;
   final cat_id;
 
@@ -138,7 +122,7 @@ class Single_cat extends StatelessWidget {
               onTap: () => Navigator.of(context).push(
                   new MaterialPageRoute(builder: (context) => new ProductList(subcat_id: subcat_id,cat_id:cat_id )
                   )),
-              
+
               child: GridTile(
                   footer: Container(
                     color: Colors.white70,
@@ -148,7 +132,7 @@ class Single_cat extends StatelessWidget {
 
                     ),
                   ),
-                  child: Image.asset(
+                  child: Image.network(
                     prod_pictures,
                     fit: BoxFit.contain,
                   )

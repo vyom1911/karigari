@@ -50,7 +50,7 @@ class _ProductListState extends State<ProductList> {
                 backgroundColor: Colors.red,
                 title: Center(
                   child: InkWell(onTap: () {},
-                      child: Text('Karigari')),
+                      child: Text('Products')),
                 ),
                 actions: <Widget>[
                   new IconButton(icon: Icon(Icons.search, color: Colors.white),
@@ -85,7 +85,7 @@ class _ProductListState extends State<ProductList> {
 
 class Single_cat extends StatelessWidget {
   final product_name;
-  final prod_pictures;
+  String prod_pictures;
   final prod_price;
 
   Single_cat({
@@ -117,7 +117,7 @@ class Single_cat extends StatelessWidget {
 
                     ),
                   ),
-                  child: Image.asset(
+                  child: Image.network(
                     prod_pictures,
                     fit: BoxFit.contain,
                   )

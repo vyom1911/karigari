@@ -1,8 +1,13 @@
+import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:karigari/pages/product_details.dart';
 import 'package:karigari/db/category_list.dart';
 import 'package:karigari/pages/Subcategory.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 class Category extends StatefulWidget {
   @override
   _CategoryState createState() => _CategoryState();
@@ -10,15 +15,18 @@ class Category extends StatefulWidget {
 
 class _CategoryState extends State<Category> {
 
+  Uint8List imageFile;
+  StorageReference pictureReference =  FirebaseStorage.instance.ref().child("categories");
 
-
+  getImage(image_name) async{
+    var url = pictureReference.child(image_name).getDownloadURL();
+    print(url.toString());
+    return url.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
     final categories = Provider.of<List<Category_List>>(context);
-
-
-
     return GridView.builder(
         itemCount: categories.length,
         gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
@@ -27,7 +35,7 @@ class _CategoryState extends State<Category> {
           return Padding( padding: const EdgeInsets.all(4.0),
             child: Single_prod(
               product_name: categories[index].name,
-              prod_pictures: categories[index].picture,
+              prod_pictures: categories[index].picture,// getImage(categories[index].picture),
               product_id: categories[index].id,
             ),
           );
@@ -38,8 +46,9 @@ class _CategoryState extends State<Category> {
 
 class Single_prod extends StatelessWidget {
   final product_name;
-  final prod_pictures;
+  String prod_pictures;
   final product_id;
+
   Single_prod({
     this.product_name,
     this.prod_pictures,
@@ -66,10 +75,11 @@ class Single_prod extends StatelessWidget {
 
                    ),
                   ),
-                child: Image.asset(
+                child: Image.network(
                   prod_pictures,
-                  fit: BoxFit.contain,
-                )
+                   //"images/products/Bangles.jpeg",
+                   fit: BoxFit.contain,
+                  )
                 ),
               ),
         ),
