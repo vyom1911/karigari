@@ -12,7 +12,9 @@ class _AuthenticateState extends State<Authenticate> {
   bool showSignIn = true;
 
   void toggleView(){
+    if (this.mounted){
     setState(() => showSignIn = !showSignIn);
+    }
   }
 
   @override

@@ -8,6 +8,7 @@ import 'package:karigari/db/category_list.dart';
 import 'package:karigari/db/database.dart';
 import 'package:karigari/pages/cart.dart';
 import 'package:karigari/db/user.dart';
+import 'package:karigari/pages/favorites.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -109,7 +110,10 @@ class _HomePageState extends State<HomePage> {
 
 
               InkWell(
-                onTap:(){},
+                onTap:(){Navigator.of(context).push(
+                    new MaterialPageRoute(builder: (context) => new Favorite(userid: current_user.uid)
+                    ));
+                },
                 child: ListTile(
                   title: Text('Favorites'),
                   leading: Icon(Icons.favorite),

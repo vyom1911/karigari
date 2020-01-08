@@ -23,24 +23,29 @@ class _LoginState extends State<Login> {
     try {
      dynamic result = await auth.signInWithEmailAndPassword( _emailTextController.text.trim(), _passwordTextController.text.trim());
      if(result==null){
-
-       setState(() {
+       if(this.mounted){
+        setState(() {
          loading = false;
          _error = "ERROR SIGNING IN!";
          print(_error);
-       });
+        });
+       }
      }else if(result =="ERROR_USER_NOT_FOUND"){
-       setState(() {
+       if(this.mounted){
+        setState(() {
          loading=false;
          _error = "USER NOT FOUND!";
          print(_error);
-       });
+       }  );
+       }
      }else if(result == "ERROR_WRONG_PASSWORD") {
-       setState(() {
+       if(this.mounted){
+         setState(() {
          loading=false;
          _error = "Wrong Password";
          print(_error);
-       });
+        });
+       }
      }
      else{
        print("SIGNED IN");
@@ -67,10 +72,12 @@ class _LoginState extends State<Login> {
               padding: EdgeInsets.only(left:8.0),
               child: IconButton(
                 icon: Icon(Icons.close),
-                onPressed: (){
-                  setState(() {
-                    _error=null;
-                  });
+                onPressed: () {
+                  if (this.mounted) {
+                    setState(() {
+                      _error = null;
+                    });
+                  }
                 },
               ),
             )
@@ -183,7 +190,9 @@ class _LoginState extends State<Login> {
                               elevation: 0.0,
                               child: MaterialButton(
                                 onPressed: () {
+                                  if(this.mounted){
                                   setState(() => loading=true);
+                                  }
                                   handleSignIn();
                                 FocusScope.of(context).requestFocus(FocusNode());
                                 },

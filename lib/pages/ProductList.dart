@@ -106,7 +106,8 @@ class Single_cat extends StatelessWidget {
                     product_detail_name: product_name,
                       product_detail_price: prod_price,
                       product_detail_picture: prod_pictures,
-                  ))),
+                  )
+                  )),
 
               child: GridTile(
                   footer: Container(

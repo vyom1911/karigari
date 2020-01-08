@@ -190,9 +190,11 @@ class _SignUpState extends State<SignUp> {
                                   },
                                 ),
                                 trailing: IconButton(icon: Icon(Icons.remove_red_eye),onPressed: (){
-                                  setState(() {
-                                    hidePass= false;
-                                  });
+                                  if(this.mounted) {
+                                    setState(() {
+                                      hidePass = false;
+                                    });
+                                  }
                                 }),
                               ),
                             ),
@@ -230,9 +232,11 @@ class _SignUpState extends State<SignUp> {
                                   },
                                 ),
                                 trailing: IconButton(icon: Icon(Icons.remove_red_eye),onPressed: (){
-                                  setState(() {
-                                    hidePass= false;
-                                  });
+                                  if(this.mounted) {
+                                    setState(() {
+                                      hidePass = false;
+                                    });
+                                  }
                                 }),
                               ),
                             ),
@@ -569,9 +573,11 @@ class _SignUpState extends State<SignUp> {
                               elevation: 0.0,
                               child: MaterialButton(
                                 onPressed: () async{
-                                  setState(() {
-                                    loading = true;
-                                  });
+                                  if(this.mounted) {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                  }
                                   validateForm();
                                   FocusScope.of(context).requestFocus(FocusNode());
                                 },
@@ -608,27 +614,31 @@ class _SignUpState extends State<SignUp> {
   }
 
   valueChanged(e) {
-    setState(() {
-      if (e == "Male"){
-        groupvalue=e;
-        gender=e;
-      }else if(e =="Female"){
-        groupvalue=e;
-        gender=e;
-      }
-    });
+    if(this.mounted) {
+      setState(() {
+        if (e == "Male") {
+          groupvalue = e;
+          gender = e;
+        } else if (e == "Female") {
+          groupvalue = e;
+          gender = e;
+        }
+      });
+    }
   }
 
   marriedvalueChanged(e) {
-    setState(() {
-      if (e == "Married"){
-        marriedvalue=e;
-        married=e;
-      }else if(e =="Single"){
-        marriedvalue=e;
-        married=e;
-      }
-    });
+    if(this.mounted) {
+      setState(() {
+        if (e == "Married") {
+          marriedvalue = e;
+          married = e;
+        } else if (e == "Single") {
+          marriedvalue = e;
+          married = e;
+        }
+      });
+    }
   }
 
 
@@ -671,18 +681,21 @@ class _SignUpState extends State<SignUp> {
             _emailTextController.text, _passwordTextController.text, data_map);
 
         if (result == null) {
-          setState(() {
-            loading =false;
-            _error = 'Invalid Form Entry or Field left empty';
-            print(_error);
-
-          });
+          if(this.mounted) {
+            setState(() {
+              loading = false;
+              _error = 'Invalid Form Entry or Field left empty';
+              print(_error);
+            });
+          }
         }
         else if (result =="ERROR_EMAIL_ALREADY_IN_USE") {
-          setState(() {
-            loading = false;
-            _error='Email Already in Use!';
-          });
+          if(this.mounted) {
+            setState(() {
+              loading = false;
+              _error = 'Email Already in Use!';
+            });
+          }
         }
     }
   }
@@ -703,9 +716,11 @@ class _SignUpState extends State<SignUp> {
               child: IconButton(
                 icon: Icon(Icons.close),
                 onPressed: (){
-                  setState(() {
-                    _error=null;
-                  });
+                  if(this.mounted) {
+                    setState(() {
+                      _error = null;
+                    });
+                  }
                 },
               ),
             )
