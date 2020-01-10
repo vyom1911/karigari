@@ -6,7 +6,8 @@ import 'package:karigari/pages/cart.dart';
 class ProductList extends StatefulWidget {
   final String subcat_id;
   final String cat_id;
-  ProductList({this.subcat_id,this.cat_id});
+  final String userId;
+  ProductList({this.subcat_id,this.cat_id,this.userId});
   @override
   _ProductListState createState() => _ProductListState();
 }
@@ -38,7 +39,7 @@ class _ProductListState extends State<ProductList> {
         if (!snapshot.hasData) {
           return Container(
               child: Center(
-                  child: Text("No Subcategories \n listed yet",
+                  child: Text("No Products \n listed yet",
                     style: TextStyle(fontSize: 30.0),)
               )
           );
@@ -59,7 +60,7 @@ class _ProductListState extends State<ProductList> {
                       icon: Icon(Icons.shopping_cart, color: Colors.white),
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => new Cart()));
+                            builder: (context) => new Cart(userId: widget.userId,)));
                       })
                 ],
               ),
@@ -73,6 +74,7 @@ class _ProductListState extends State<ProductList> {
                       product_name: snapshot.data.documents[index]['product_name'],
                       prod_pictures: snapshot.data.documents[index]['product_picture'],
                       prod_price: snapshot.data.documents[index]['price'],
+                      userId: widget.userId,
                     );
                   }
               )
@@ -87,11 +89,13 @@ class Single_cat extends StatelessWidget {
   final product_name;
   String prod_pictures;
   final prod_price;
+  final String userId;
 
   Single_cat({
     this.product_name,
     this.prod_pictures,
-    this.prod_price
+    this.prod_price,
+    this.userId
   });
 
   @override
@@ -106,6 +110,7 @@ class Single_cat extends StatelessWidget {
                     product_detail_name: product_name,
                       product_detail_price: prod_price,
                       product_detail_picture: prod_pictures,
+                    userId:userId
                   )
                   )),
 

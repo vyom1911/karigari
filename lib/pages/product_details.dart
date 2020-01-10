@@ -10,11 +10,13 @@ class ProductDetails extends StatefulWidget {
   final product_detail_name;
   final product_detail_price;
   final product_detail_picture;
+  final String userId;
 
   ProductDetails({
     this.product_detail_name,
     this.product_detail_price,
-    this.product_detail_picture
+    this.product_detail_picture,
+    this.userId
   });
 
   @override
@@ -25,12 +27,19 @@ class _ProductDetailsState extends State<ProductDetails> {
   User current_user;
 
   bool _notFavorite = false;
+  bool _inCart = false;
 
 
 
   void _handleFavoriteChange(bool newValue) {
     setState(() {
       _notFavorite = newValue;
+    });
+  }
+
+  void _handleCartChange(bool newValue) {
+    setState(() {
+      _inCart = newValue;
     });
   }
 
@@ -70,12 +79,34 @@ class _ProductDetailsState extends State<ProductDetails> {
         }
         )
       }
-      else{
-        print("DOESN'T EXISTS")
-      }
     });
 
 
+    Firestore.instance.collection("users").document(current_user.uid).collection("cart").getDocuments().
+    then((sub) => {
+      if (sub.documents.length > 0) {
+        //checking if the product is in favorites or not
+        Firestore.instance.collection("users").document(current_user.uid).collection("cart")
+            .document(widget.product_detail_name.toString())
+            .get().then((doc) {
+          if(doc.exists) {
+            // if product in cart then set _inCart to false else true
+            if (this.mounted) {
+              setState(() {
+                _inCart = true;
+              });
+            }
+          }
+            else{
+              if(this.mounted){
+                setState(() {
+                  _inCart=false;
+                });
+              }
+            }
+         })
+      }
+    });
 
 
     return WillPopScope(
@@ -95,7 +126,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           actions: <Widget>[
             new IconButton(icon: Icon(Icons.search, color:Colors.white), onPressed: (){}),
             new IconButton(icon: Icon(Icons.shopping_cart, color:Colors.white), onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>new Cart()));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>new Cart(userId: widget.userId,)));
             })
           ],
         ),
@@ -214,7 +245,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ),
 
 //            ================= The Cart Button =================
-                new IconButton(icon:Icon(Icons.add_shopping_cart),color:Colors.red,onPressed: (){}),
+                CartIcon(inCart: _inCart,onChangedCart: _handleCartChange
+                    ,uid: current_user.uid,product_detail_name: widget.product_detail_name,
+                    product_detail_picture: widget.product_detail_picture ,
+                    product_detail_price: widget.product_detail_price),
 
 //            ================= The Favorite Button =================
                 FavoriteIcon(notFavorite: _notFavorite,onChanged: _handleFavoriteChange
@@ -396,6 +430,50 @@ class FavoriteIcon extends StatelessWidget {
             Firestore.instance.collection("users").document(uid).collection("favorites")
                 .document(product_detail_name.toString()).delete();
             print("Fav deleted");
+          }
+          catch(e) {
+            print(e.toString());
+          }
+        }
+        });
+  }
+}
+
+class CartIcon extends StatelessWidget {
+  CartIcon({Key key, this.inCart: false,this.uid,this.product_detail_name,
+    this.product_detail_picture,this.product_detail_price, @required this.onChangedCart})
+      : super(key: key);
+
+  final  product_detail_name;
+  final  product_detail_picture;
+  final  product_detail_price;
+  final String uid;
+  final bool inCart;
+  final ValueChanged<bool> onChangedCart;
+
+  void _handleCartTap() {
+    onChangedCart(!inCart);
+  }
+
+  Widget build(BuildContext context) {
+
+    return IconButton(
+        icon:inCart ? Icon(Icons.remove_shopping_cart,color: Colors.red) : Icon(Icons.add_shopping_cart,color: Colors.red),
+        onPressed: (){ _handleCartTap();
+        if(!inCart){
+          Firestore.instance.collection("users").document(uid).collection("cart")
+              .document(product_detail_name.toString()).setData({
+            "product_name":product_detail_name,
+            "product_picture":product_detail_picture,
+            "product_price":product_detail_price,
+          });
+          print("Added To Cart!");
+
+        }else{
+          try{
+            Firestore.instance.collection("users").document(uid).collection("cart")
+                .document(product_detail_name.toString()).delete();
+            print("Deleted From Cart");
           }
           catch(e) {
             print(e.toString());

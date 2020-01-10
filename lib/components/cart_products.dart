@@ -1,44 +1,44 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import 'package:karigari/db/user.dart';
 class Cart_products extends StatefulWidget {
+  final String userId;
+  Cart_products({this.userId});
   @override
   _Cart_productsState createState() => _Cart_productsState();
 }
 
 class _Cart_productsState extends State<Cart_products> {
-  var Products_on_the_cart = [
-  {
-  "name": "Product 3",
-  "picture": "images/products/bg3.jpeg",
-  "price": 5000,
-   "size":"M",
-  "color":"Golden",
-   "quantity":1
-  },
-  {
-    "name": "Product 1",
-    "picture": "images/products/bg1.jpeg",
-    "price": 2000,
-    "size":"M",
-    "color":"Golden",
-    "quantity":1
-  },
-  ];
 
   @override
   Widget build(BuildContext context) {
-    return new ListView.builder(
-        itemCount: Products_on_the_cart.length,
-        itemBuilder: (context,index){
-      return Single_cart_product(
-          cart_prod_name: Products_on_the_cart[index]["name"],
-          cart_prod_price: Products_on_the_cart[index]["price"],
-          cart_prod_color: Products_on_the_cart[index]["color"],
-          cart_prod_picture: Products_on_the_cart[index]["picture"],
-          cart_prod_size: Products_on_the_cart[index]["size"],
-          cart_prod_qty: Products_on_the_cart[index]["quantity"],
-      );
-    });
+    return StreamBuilder(
+      stream:  Firestore.instance.collection("users").document(widget.userId).collection("cart").snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container(
+              child: Center(
+                  child: Text("No Items in Cart yet",
+                    style: TextStyle(fontSize: 30.0),)
+              )
+          );
+        }else{
+          return new ListView.builder(
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context,index){
+            return Single_cart_product(
+                cart_prod_name: snapshot.data.documents[index]["product_name"],
+                cart_prod_price: snapshot.data.documents[index]["product_price"],
+                cart_prod_color: "Golden",
+                cart_prod_picture: snapshot.data.documents[index]["product_picture"],
+                cart_prod_size: "M",
+                cart_prod_qty: 1,
+            );
+          });
+        }
+      }
+    );
   }
 }
 
@@ -63,7 +63,7 @@ class Single_cart_product extends StatelessWidget {
     return Card(
       child: ListTile(
         // ================ Leading Section ================
-        leading: new Image.asset(cart_prod_picture,width: 80.0,height: 80.0),
+        leading: new Image.network(cart_prod_picture,width: 80.0,height: 80.0),
         //  ================ Title Section ================
       title: new Text(cart_prod_name),
         // ================ Substitle Sections ================

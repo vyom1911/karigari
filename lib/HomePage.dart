@@ -9,6 +9,7 @@ import 'package:karigari/db/database.dart';
 import 'package:karigari/pages/cart.dart';
 import 'package:karigari/db/user.dart';
 import 'package:karigari/pages/favorites.dart';
+import 'package:karigari/pages/my_orders.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -60,7 +61,7 @@ class _HomePageState extends State<HomePage> {
           actions: <Widget>[
             new IconButton(icon: Icon(Icons.search, color:Colors.white), onPressed: (){}),
             new IconButton(icon: Icon(Icons.shopping_cart, color:Colors.white), onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>new Cart()));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>new Cart(userId: current_user.uid,)));
             })
           ],
         ),
@@ -101,7 +102,7 @@ class _HomePageState extends State<HomePage> {
               ),
 
               InkWell(
-                onTap:(){},
+                onTap:(){Navigator.push(context, MaterialPageRoute(builder: (context)=>new MyOrders(userId: current_user.uid,)));},
                 child: ListTile(
                   title: Text('My Orders'),
                   leading: Icon(Icons.shopping_basket),
@@ -178,7 +179,7 @@ class _HomePageState extends State<HomePage> {
               //height: 320.0,
               child: StreamProvider<List<Category_List>>.value(
                   value:DatabaseService().categories,
-                  child: Category()
+                  child: Category(userId: current_user.uid,)
               )
               ,
             )

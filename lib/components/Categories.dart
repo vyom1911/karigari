@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class Category extends StatefulWidget {
+  final String userId;
+  Category({this.userId});
   @override
   _CategoryState createState() => _CategoryState();
 }
@@ -37,6 +39,7 @@ class _CategoryState extends State<Category> {
               product_name: categories[index].name,
               prod_pictures: categories[index].picture,// getImage(categories[index].picture),
               product_id: categories[index].id,
+              userId: widget.userId,
             ),
           );
         }
@@ -48,11 +51,13 @@ class Single_prod extends StatelessWidget {
   final product_name;
   String prod_pictures;
   final product_id;
+  final String userId;
 
   Single_prod({
     this.product_name,
     this.prod_pictures,
-    this.product_id
+    this.product_id,
+    this.userId
   });
 
   @override
@@ -64,7 +69,7 @@ class Single_prod extends StatelessWidget {
               //On tap opens product description, change later to product sub category
 
               onTap: () => Navigator.of(context).push(
-                  new MaterialPageRoute(builder: (context) => new Subcategory(category: product_name,id:product_id)
+                  new MaterialPageRoute(builder: (context) => new Subcategory(category: product_name,id:product_id,userId: userId,)
                   )),
               child: GridTile(
                   footer: Container(

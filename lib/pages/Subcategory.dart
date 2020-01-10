@@ -8,8 +8,9 @@ import 'package:karigari/pages/cart.dart';
 class Subcategory extends StatefulWidget {
   final String category ;
   final String id;
+  final String userId;
 
-  Subcategory({this.category,this.id});
+  Subcategory({this.category,this.id,this.userId});
   @override
   _SubcategoryState createState() => _SubcategoryState();
 }
@@ -68,7 +69,7 @@ class _SubcategoryState extends State<Subcategory> {
                       icon: Icon(Icons.shopping_cart, color: Colors.white),
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => new Cart()));
+                            builder: (context) => new Cart(userId: widget.userId)));
                       })
                 ],
               ),
@@ -82,7 +83,8 @@ class _SubcategoryState extends State<Subcategory> {
                       product_name: snapshot.data.documents[index]['subcat_name'],
                       prod_pictures: snapshot.data.documents[index]['subcat_picture'],
                       subcat_id:snapshot.data.documents[index].documentID,
-                      cat_id: widget.id
+                      cat_id: widget.id,
+                      userId: widget.userId,
                     );
                   }
               )
@@ -98,12 +100,14 @@ class Single_cat extends StatelessWidget {
   String prod_pictures;
   final subcat_id;
   final cat_id;
+  final String userId;
 
   Single_cat({
     this.product_name,
     this.prod_pictures,
     this.subcat_id,
-    this.cat_id
+    this.cat_id,
+    this.userId
   });
 
   @override
@@ -120,7 +124,7 @@ class Single_cat extends StatelessWidget {
 //                      product_detail_picture: prod_pictures,
 //                  ))),
               onTap: () => Navigator.of(context).push(
-                  new MaterialPageRoute(builder: (context) => new ProductList(subcat_id: subcat_id,cat_id:cat_id )
+                  new MaterialPageRoute(builder: (context) => new ProductList(subcat_id: subcat_id,cat_id:cat_id,userId:userId )
                   )),
 
               child: GridTile(
