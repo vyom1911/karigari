@@ -32,7 +32,6 @@ class _HomePageState extends State<HomePage> {
     current_user = Provider.of<User>(context);
     userData = Provider.of<UserData>(context);
 
-
     //Build the page
     Widget image_carousel = new Container(
       height: 400.0,

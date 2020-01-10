@@ -237,7 +237,14 @@ class _ProductDetailsState extends State<ProductDetails> {
               children: <Widget>[
 //           ================= The Size Button =================
                 Expanded(
-                  child: MaterialButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>new Cart()));},
+                  child: MaterialButton(onPressed: (){
+                    Firestore.instance.collection("users").document(current_user.uid).collection("cart")
+                        .document(widget.product_detail_name.toString()).setData({
+                      "product_name":widget.product_detail_name,
+                      "product_picture":widget.product_detail_picture,
+                      "product_price":widget.product_detail_price,
+                    });
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>new Cart(userId: current_user.uid)));},
                     color:Colors.red,
                     textColor: Colors.white,
                     child: new Text("Buy Now")

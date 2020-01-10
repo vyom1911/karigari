@@ -47,6 +47,38 @@ class _SignUpState extends State<SignUp> {
 
   String _error=null;
 
+  Widget showAlert(){
+    if(_error!=null){
+      return Container(
+        color: Colors.amberAccent,
+        width: double.infinity,
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(Icons.error_outline)),
+            Expanded(child: Text(_error),),
+            Padding(
+              padding: EdgeInsets.only(left:8.0),
+              child: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  if (this.mounted) {
+                    setState(() {
+                      _error = null;
+                    });
+                  }
+                },
+              ),
+            )
+          ],
+        ),
+      );
+    }
+    return SizedBox(height: 0,);
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height / 3;
@@ -691,46 +723,20 @@ class _SignUpState extends State<SignUp> {
         }
         else if (result =="ERROR_EMAIL_ALREADY_IN_USE") {
           if(this.mounted) {
-            setState(() {
+            setState((){
               loading = false;
               _error = 'Email Already in Use!';
+              print(_error);
             });
           }
         }
+    }else{
+      setState((){
+        loading = false;
+        _error = 'Invalid Form Entry or Field left empty';
+        print(_error);
+      });
     }
   }
-  Widget showAlert(){
-    if(_error!=null){
-      return Container(
-        color: Colors.amberAccent,
-        width: double.infinity,
-        padding: EdgeInsets.all(8.0),
-        child: Row(
-          children: <Widget>[
-            Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.error_outline)),
-            Expanded(child: Text(_error),),
-            Padding(
-              padding: EdgeInsets.only(left:8.0),
-              child: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: (){
-                  if(this.mounted) {
-                    setState(() {
-                      _error = null;
-                    });
-                  }
-                },
-              ),
-            )
-          ],
-        ),
-      );
-    }
-    return SizedBox(height: 0,);
-  }
-
-
 
 }

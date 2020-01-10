@@ -51,7 +51,7 @@ class _SubcategoryState extends State<Favorite> {
                         icon: Icon(Icons.shopping_cart, color: Colors.white),
                         onPressed: () {
                           Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => new Cart()));
+                              builder: (context) => new Cart(userId: widget.userid,)));
                         })
                   ],
                 ),
