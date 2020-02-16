@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 //my imports
 import 'package:karigari/HomePage.dart';
 import 'package:karigari/components/cart_products.dart';
+import 'package:http/http.dart' as http;
+import 'package:mailer2/mailer.dart';
+
 class Cart extends StatefulWidget {
   final String userId;
   Cart({this.userId});
@@ -37,8 +40,39 @@ class _CartState extends State<Cart> {
     );
   }
 
+
+
+//  gmail(String user,String body){
+//    var options = new GmailSmtpOptions()
+//      ..username = 'xyz@gmail.com'
+//      ..password = 'adgzf'; // Note: if you have Google's "app specific passwords" enabled,
+//    // you need to use one of those here.
+//
+//    // How you use and store passwords is up to you. Beware of storing passwords in plain.
+//
+//    // Create our email transport.
+//    var emailTransport = new SmtpTransport(options);
+//
+//    // Create our mail/envelope.
+//    var envelope = new Envelope()
+//      ..from = 'karigariapp@gmail.com'
+//      ..recipients.add('prachalneema123@gmail.com')
+//      ..ccRecipients.add('karigariapp@gmail.com')
+//      ..bccRecipients.add('vyomshrivastava2@gmail.com')
+//      ..subject = 'New order from $user'
+//      ..text = body
+//      ..html = '<h1>Test</h1><p>Hey!</p>';
+//
+//    // Email it.
+//    emailTransport.send(envelope)
+//        .then((envelope) => print('Email sent!'))
+//        .catchError((e) => print('Error occurred: $e'));
+//  }
+
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: new AppBar(
         elevation: 0.1,
@@ -76,8 +110,9 @@ class _CartState extends State<Cart> {
             );
           }
           else{
-            var Total = 0;
+            double Total = 0.0;
             snapshot.data.documents.forEach((doc)=> Total+=doc["product_price"]);
+
 
             return new Container(
               color: Colors.white,
@@ -99,6 +134,21 @@ class _CartState extends State<Cart> {
                         "product_price":doc["product_price"],
                       })
                       );
+//                      var items='';
+
+//                      snapshot.data.documents.forEach((doc) =>
+//                      items+="\n" + doc["product_name"]
+//                      );
+//                      Firestore.instance.collection("users").document(widget.userId).get().then((doc) =>
+//                          gmail(doc.data["username"],
+//                            'Hello Prachal, \n User '+ doc.data["username"] + 'has ordered the following items: $items',
+//                          )
+//                      );
+
+//                      gmail("TEST",
+//                        'Hello Prachal, \n User has ordered the following items: $items',
+//                      );
+
                       _showDialog("Check Out", "Your Order Is Placed!");
                       print("ADDED Cart products to orders");
                       snapshot.data.documents.forEach((doc) =>

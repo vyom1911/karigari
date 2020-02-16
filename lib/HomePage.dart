@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
     current_user = Provider.of<User>(context);
     userData = Provider.of<UserData>(context);
 
+
     //Build the page
     Widget image_carousel = new Container(
       height: 400.0,
@@ -156,7 +157,7 @@ class _HomePageState extends State<HomePage> {
         ),
 
         body:
-        new Column(
+        new ListView(
           children: <Widget>[
             //image carousel begins here
             image_carousel,
@@ -174,13 +175,12 @@ class _HomePageState extends State<HomePage> {
            // HorizontalList()
 
             //Grid View
-            Flexible(
-              //height: 320.0,
-              child: StreamProvider<List<Category_List>>.value(
-                  value:DatabaseService().categories,
-                  child: Category(userId: current_user.uid,)
-              )
-              ,
+            Container(
+              height: 600,
+                child: StreamProvider<List<Category_List>>.value(
+                    value:DatabaseService().categories,
+                    child: Category(userId: current_user.uid,)
+                ),
             )
           ],
         ),

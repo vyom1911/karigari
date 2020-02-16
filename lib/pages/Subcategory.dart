@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:karigari/components/loading.dart';
+import 'package:karigari/components/loading_in_app.dart';
 import 'package:karigari/pages/ProductList.dart';
 import 'package:karigari/HomePage.dart';
 import 'package:karigari/pages/cart.dart';
@@ -46,12 +48,8 @@ class _SubcategoryState extends State<Subcategory> {
       stream: Firestore.instance.collection("categories").document(widget.id).collection("subcategories").snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Container(
-              child: Center(
-                  child: Text("No Subcategories \n listed yet",
-                    style: TextStyle(fontSize: 30.0),)
-              )
-          );
+
+          return LoadingInApp();
         }
         else {
           return Scaffold(

@@ -8,15 +8,62 @@ import 'package:provider/provider.dart';
 class ProductDetails extends StatefulWidget {
 
   final product_detail_name;
-  final product_detail_price;
-  final product_detail_picture;
+  String product_detail_picture;
   final String userId;
+  final product_code;
+  final description;
+  final metal_type;
+  final metal_color;
+  final gender;
+  final brand;
+  final gold_purity;
+  final silver_purity;
+  final platinum_purity;
+  final size;
+  final stone_presence;
+  final stone_weight;
+  final diamond_weight;
+  final gross_weight;
+  final net_weight;
+  final stone_cost;
+  final diamond_presence;
+  final diamond_carat;
+  final diamond_clarity;
+  final diamond_color;
+  final diamond_cost;
+  final wastage_percent;
+  final other_charges;
+  final discount;
+
 
   ProductDetails({
     this.product_detail_name,
-    this.product_detail_price,
     this.product_detail_picture,
-    this.userId
+    this.userId,
+    this.product_code,
+    this.description,
+    this.metal_type,
+    this.metal_color,
+    this.gender,
+    this.brand,
+    this.gold_purity,
+    this.silver_purity,
+    this.platinum_purity,
+    this.size,
+    this.stone_presence,
+    this.stone_weight,
+    this.diamond_weight,
+    this.gross_weight,
+    this.net_weight,
+    this.stone_cost,
+    this.diamond_presence,
+    this.diamond_carat,
+    this.diamond_clarity,
+    this.diamond_color,
+    this.diamond_cost,
+    this.wastage_percent,
+    this.other_charges,
+    this.discount
   });
 
   @override
@@ -29,6 +76,11 @@ class _ProductDetailsState extends State<ProductDetails> {
   bool _notFavorite = false;
   bool _inCart = false;
 
+  double gold_rate = 4100;
+  double silver_rate = 48.5;
+  double platinum_rate = 12400;
+  double metal_rate =0;
+  double gst =3.0;
 
 
   void _handleFavoriteChange(bool newValue) {
@@ -47,6 +99,63 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   @override
   Widget build(BuildContext context) {
+
+    Firestore.instance.collection("rates").document("gold")
+        .get().then((doc) {
+      if(doc.exists){
+        if(this.mounted) {
+          setState(() {
+            gold_rate = doc.data["rate"].toDouble();
+          });
+        }
+      }
+    });
+
+    Firestore.instance.collection("rates").document("silver")
+        .get().then((doc) {
+      if(doc.exists){
+        if(this.mounted) {
+          setState(() {
+            silver_rate = doc.data["rate"].toDouble();
+          });
+        }
+      }
+    });
+
+    Firestore.instance.collection("rates").document("platinum")
+        .get().then((doc) {
+      if(doc.exists){
+        if(this.mounted) {
+          setState(() {
+            platinum_rate = doc.data["rate"].toDouble();
+          });
+        }
+      }
+    });
+
+    Firestore.instance.collection("rates").document("gst")
+        .get().then((doc) {
+      if(doc.exists){
+        if(this.mounted) {
+          setState(() {
+            gst = doc.data["rate"].toDouble();
+          });
+        }
+      }
+    });
+
+    if (widget.metal_type.toLowerCase() == "silver"){
+      metal_rate=gold_rate;
+    }
+    else if (widget.metal_type.toLowerCase() == "platinum"){
+      metal_rate=gold_rate;
+    }
+    else{
+      metal_rate=gold_rate;
+    }
+    double gross_price  = metal_rate*widget.gross_weight + widget.stone_cost + widget.diamond_cost + widget.other_charges ;
+    double net_price =  gross_price*(gst/100) + gross_price - gross_price*(widget.discount/100);
+
     current_user = Provider.of<User>(context);
     //checking if collection favorites exists
     Firestore.instance.collection("users").document(current_user.uid).collection("favorites").getDocuments().
@@ -80,7 +189,6 @@ class _ProductDetailsState extends State<ProductDetails> {
         )
       }
     });
-
 
     Firestore.instance.collection("users").document(current_user.uid).collection("cart").getDocuments().
     then((sub) => {
@@ -148,7 +256,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     title: new Row(
                       children: <Widget>[
                         Expanded(
-                          child: new Text("₹${widget.product_detail_price}",
+                          child: new Text("₹${net_price}",
                           style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold),),
                         )
                       ],
@@ -158,91 +266,19 @@ class _ProductDetailsState extends State<ProductDetails> {
               ),
             ),
 
-//           ================= The First Button =================
-            Row(
-              children: <Widget>[
-//           ================= The Shape Button =================
-                Expanded(
-                  child: MaterialButton(onPressed: (){},
-                      color:Colors.white,
-                      textColor: Colors.black,
-                    child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: new Text("Shape",style: TextStyle(fontSize: 11,fontWeight: FontWeight.bold)),
-                      ),
-                      Expanded(
-                        child: new Icon(Icons.arrow_drop_down),
-                      )
-                    ],
-                  ),),
-                ),
-
-//           ================= The Size Button =================
-                Expanded(
-                  child: MaterialButton(onPressed: (){},
-                    color:Colors.white,
-                    textColor: Colors.black,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: new Text("Measure",style: TextStyle(fontSize: 11,fontWeight: FontWeight.bold)),
-                        ),
-                        Expanded(
-                          child: new Icon(Icons.arrow_drop_down),
-                        )
-                      ],
-                    ),),
-                ),
-
-//           ================= The Weight Button =================
-                Expanded(
-                  child: MaterialButton(onPressed: (){},
-                    color:Colors.white,
-                    textColor: Colors.black,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: new Text("Weigh",style: TextStyle(fontSize: 11,fontWeight: FontWeight.bold)),
-                        ),
-                        Expanded(
-                          child: new Icon(Icons.arrow_drop_down),
-                        )
-                      ],
-                    ),),
-                ),
-
-//           ================= The Qty Button =================
-                Expanded(
-                  child: MaterialButton(onPressed: (){},
-                    color:Colors.white,
-                    textColor: Colors.black,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: new Text("Qty",style: TextStyle(fontSize: 11,fontWeight: FontWeight.bold)),
-                        ),
-                        Expanded(
-                          child: new Icon(Icons.arrow_drop_down),
-                        )
-                      ],
-                    ),),
-                ),
-              ],
-            ),
-
 
 //           ================= The First Button =================
             Row(
               children: <Widget>[
 //           ================= The Size Button =================
                 Expanded(
+                  flex:3,
                   child: MaterialButton(onPressed: (){
                     Firestore.instance.collection("users").document(current_user.uid).collection("cart")
                         .document(widget.product_detail_name.toString()).setData({
                       "product_name":widget.product_detail_name,
                       "product_picture":widget.product_detail_picture,
-                      "product_price":widget.product_detail_price,
+                      "net_price":net_price,
                     });
                     Navigator.push(context, MaterialPageRoute(builder: (context)=>new Cart(userId: current_user.uid)));},
                     color:Colors.red,
@@ -250,18 +286,57 @@ class _ProductDetailsState extends State<ProductDetails> {
                     child: new Text("Buy Now")
                   ),
                 ),
-
+//           ================= The Qty Button =================
+                Expanded(
+                  flex:1,
+                  child: MaterialButton(onPressed: (){},
+                  color:Colors.white,
+                  textColor: Colors.black,
+                    child: Row(
+                  children: <Widget>[
+                      Expanded(
+                        child: new Text("Qty",style: TextStyle(fontSize: 11,fontWeight: FontWeight.bold),),
+                        ),
+                      Expanded(
+                        child: new Icon(Icons.arrow_drop_down),
+                      )
+                    ],
+                  ),),
+                  ),
 //            ================= The Cart Button =================
                 CartIcon(inCart: _inCart,onChangedCart: _handleCartChange
                     ,uid: current_user.uid,product_detail_name: widget.product_detail_name,
                     product_detail_picture: widget.product_detail_picture ,
-                    product_detail_price: widget.product_detail_price),
+                    product_detail_price: net_price),
 
 //            ================= The Favorite Button =================
                 FavoriteIcon(notFavorite: _notFavorite,onChanged: _handleFavoriteChange
                 ,uid: current_user.uid,product_detail_name: widget.product_detail_name,
                   product_detail_picture: widget.product_detail_picture ,
-                    product_detail_price: widget.product_detail_price)
+                  product_code: widget.product_code,
+                  description: widget.description,
+                  metal_type: widget.metal_type,
+                  metal_color: widget.metal_color,
+                  gender: widget.gender,
+                  brand: widget.brand,
+                  gold_purity: widget.gold_purity,
+                  silver_purity: widget.silver_purity,
+                  platinum_purity: widget.platinum_purity,
+                  size: widget.size,
+                  stone_presence: widget.stone_presence,
+                  stone_weight: widget.stone_weight,
+                  diamond_weight: widget.diamond_weight,
+                  gross_weight: widget.gross_weight,
+                  net_weight: widget.net_weight,
+                  stone_cost: widget.stone_cost,
+                  diamond_presence: widget.diamond_presence,
+                  diamond_carat: widget.diamond_carat,
+                  diamond_clarity: widget.diamond_clarity,
+                  diamond_color: widget.diamond_color,
+                  diamond_cost: widget.diamond_cost,
+                  wastage_percent: widget.wastage_percent,
+                  other_charges: widget.other_charges,
+                  discount: widget.discount,)
 
               ],
             ),
@@ -269,7 +344,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
             new ListTile(
               title: new Text("Product Details"),
-                subtitle: new Text("Gold Bangles"),
+                subtitle: new Text(widget.description),
             ),
             Divider(),
             new Row(children: <Widget>[
@@ -283,26 +358,175 @@ class _ProductDetailsState extends State<ProductDetails> {
               Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
                 child:  new Text("Product Brand: ",style: TextStyle(color: Colors.grey),),),
               Padding(padding: EdgeInsets.all(5.0),
-                child: new Text("Brand X"),)
+                child: new Text(widget.brand),)
             ],),
 
             new Row(children: <Widget>[
               Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
-                child:  new Text("Product Condition: ",style: TextStyle(color: Colors.grey),),),
+                child:  new Text("Metal Type: ",style: TextStyle(color: Colors.grey),),),
               Padding(padding: EdgeInsets.all(5.0),
-                child: new Text("Brand New"),)
+                child: new Text(widget.metal_type),)
+            ],),
+
+            new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Metal Color: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text(widget.metal_color),)
+            ],),
+
+            widget.gold_purity!=0 ? new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Gold Purity: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text("${widget.gold_purity}"),)
+            ],) : new Container(),
+
+            widget.silver_purity!=0 ? new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Silver Purity: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text("${widget.silver_purity}"),)
+            ],) : new Container(),
+
+            widget.platinum_purity!=0 ? new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Platinum Purity: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text("${widget.platinum_purity}"),)
+            ],) : new Container(),
+
+            new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Size: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text(widget.size.toString()),)
+            ],),
+
+            new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Gross Weight: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text("${widget.gross_weight} grams"))
+            ],),
+
+            new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Stone Presence: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                
+                child: widget.stone_presence==1 ?new Text("Yes") : new  Text("No"),)
+            ],),
+
+            widget.stone_weight!=0 ? new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Stone Weight: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text("${widget.stone_weight} grams"),)
+            ],) : new Container(),
+
+            widget.stone_cost!=0 ? new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Stone Weight: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text("${widget.stone_cost} grams"),)
+            ],) : new Container(),
+
+            new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Diamond Presence: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+
+                child: widget.diamond_presence==1 ?new Text("Yes") : new  Text("No"),)
+            ],),
+
+            widget.diamond_carat!=0 ? new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Diamond Carat: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text("${widget.diamond_carat}"),)
+            ],) : new Container(),
+
+            widget.diamond_clarity!=0 ? new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Diamond Carat: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text("${widget.diamond_clarity}"),)
+            ],) : new Container(),
+
+            widget.diamond_color!=0 ? new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Diamond Carat: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text("${widget.diamond_color}"),)
+            ],) : new Container(),
+
+            widget.diamond_weight!=0 ? new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Diamond Carat: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text("${widget.diamond_weight}"),)
+            ],) : new Container(),
+
+            widget.diamond_cost!=0 ? new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Diamond Carat: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text("${widget.diamond_cost}"),)
+            ],) : new Container(),
+
+            new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Wastage Percent: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                  child: new Text("${widget.wastage_percent}%"))
+            ],),
+
+            new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Other Charges: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                  child: new Text("₹${widget.other_charges}"))
             ],),
 
             Divider(),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: new Text("Similar Products"),
+              child: new Text("Price Description"),
             ),
-            // SIMILAR PRODUCTS SECTION
-            Container(
-              height: 360.0,
-                child: Similar_products(),
-            )
+
+            widget.discount!=0 ? new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Diamond Carat: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                child: new Text("${widget.discount}"),)
+            ],) : new Container(),
+
+            new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Gross Price: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                  child: new Text("₹${gross_price}"))
+            ],),
+
+            new Row(children: <Widget>[
+              Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
+                child:  new Text("Net Price: ",style: TextStyle(color: Colors.grey),),),
+              Padding(padding: EdgeInsets.all(5.0),
+                  child: new Text("₹${net_price}"))
+            ],),
+
+            Divider(),
+// ===== COMMENTED OUT SIMILAR PRODUCT WIDGET, TO BE ADDED LATER =====
+//            Padding(
+//              padding: const EdgeInsets.all(8.0),
+//              child: new Text("Similar Products"),
+//            ),
+//            // SIMILAR PRODUCTS SECTION
+//            Container(
+//              height: 360.0,
+//                child: Similar_products(),
+//            )
           ],
         ),
       ),
@@ -311,104 +535,151 @@ class _ProductDetailsState extends State<ProductDetails> {
 
 }
 
-class Similar_products extends StatefulWidget {
-  @override
-  _Similar_productsState createState() => _Similar_productsState();
-}
-
-class _Similar_productsState extends State<Similar_products> {
-  var product_list = [
-    {
-      "name": "product 1",
-      "picture": "images/products/bg1.jpeg",
-      "price": 1000
-    },
-    {
-      "name": "Product 2",
-      "picture": "images/products/bg2.jpeg",
-      "price": 2000
-    },
-    {
-      "name": "Product 3",
-      "picture": "images/products/bg3.jpeg",
-      "price": 5000
-    }
-  ];
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-
-
-        body: GridView.builder(
-            itemCount: product_list.length,
-            gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2),
-            itemBuilder: (BuildContext context, int index) {
-              return Similar_Single_cat(
-                product_name: product_list[index]['name'],
-                prod_pictures: product_list[index]['picture'],
-                prod_price: product_list[index]['price'],
-              );
-            }
-        )
-    );
-  }
-}
-
-class Similar_Single_cat extends StatelessWidget {
-  final product_name;
-  final prod_pictures;
-  final prod_price;
-
-  Similar_Single_cat({
-    this.product_name,
-    this.prod_pictures,
-    this.prod_price
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        child: Hero(tag: product_name,
-          child: Material(
-            child: InkWell(
-              //On tap opens product description, change later to product sub category
-              onTap: () => Navigator.of(context).push(
-                  new MaterialPageRoute(builder: (context) => new ProductDetails(
-                    product_detail_name: product_name,
-                    product_detail_price: prod_price,
-                    product_detail_picture: prod_pictures,
-                  ))),
-
-              child: GridTile(
-                  footer: Container(
-                    color: Colors.white70,
-                    child: ListTile(
-                      leading: Text(product_name,style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-
-                    ),
-                  ),
-                  child: Image.asset(
-                    prod_pictures,
-                    fit: BoxFit.contain,
-                  )
-              ),
-            ),
-          ),
-        )
-    );
-  }
-}
+//class Similar_products extends StatefulWidget {
+//  @override
+//  _Similar_productsState createState() => _Similar_productsState();
+//}
+//
+//class _Similar_productsState extends State<Similar_products> {
+//  var product_list = [
+//    {
+//      "name": "product 1",
+//      "picture": "images/products/bg1.jpeg",
+//      "price": 1000
+//    },
+//    {
+//      "name": "Product 2",
+//      "picture": "images/products/bg2.jpeg",
+//      "price": 2000
+//    },
+//    {
+//      "name": "Product 3",
+//      "picture": "images/products/bg3.jpeg",
+//      "price": 5000
+//    }
+//  ];
+//  @override
+//  Widget build(BuildContext context) {
+//
+//    return Scaffold(
+//
+//
+//        body: GridView.builder(
+//            itemCount: product_list.length,
+//            gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+//                crossAxisCount: 2),
+//            itemBuilder: (BuildContext context, int index) {
+//              return Similar_Single_cat(
+//                product_name: product_list[index]['name'],
+//                prod_pictures: product_list[index]['picture'],
+//                net_price: product_list[index]['price'],
+//              );
+//            }
+//        )
+//    );
+//  }
+//}
+//
+//class Similar_Single_cat extends StatelessWidget {
+//  final product_name;
+//  final prod_pictures;
+//  final net_price;
+//
+//  Similar_Single_cat({
+//    this.product_name,
+//    this.prod_pictures,
+//    this.net_price
+//  });
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Card(
+//        child: Hero(tag: product_name,
+//          child: Material(
+//            child: InkWell(
+//              //On tap opens product description, change later to product sub category
+//              onTap: () => Navigator.of(context).push(
+//                  new MaterialPageRoute(builder: (context) => new ProductDetails(
+//                    product_detail_name: product_name,
+//                    net_price:  net_price,
+//                    product_detail_picture: prod_pictures,
+//                  ))),
+//
+//              child: GridTile(
+//                  footer: Container(
+//                    color: Colors.white70,
+//                    child: ListTile(
+//                      leading: Text(product_name,style: TextStyle(fontWeight: FontWeight.bold),
+//                      ),
+//
+//                    ),
+//                  ),
+//                  child: Image.asset(
+//                    prod_pictures,
+//                    fit: BoxFit.contain,
+//                  )
+//              ),
+//            ),
+//          ),
+//        )
+//    );
+//  }
+//}
 
 class FavoriteIcon extends StatelessWidget {
   FavoriteIcon({Key key, this.notFavorite: false,this.uid,this.product_detail_name,
-    this.product_detail_picture,this.product_detail_price, @required this.onChanged})
+    this.product_detail_picture,this.product_code,
+  this.description,
+  this.metal_type,
+  this.metal_color,
+  this.gender,
+  this.brand,
+  this.gold_purity,
+  this.silver_purity,
+  this.platinum_purity,
+  this.size,
+  this.stone_presence,
+  this.stone_weight,
+  this.diamond_weight,
+  this.gross_weight,
+  this.net_weight,
+  this.stone_cost,
+  this.diamond_presence,
+  this.diamond_carat,
+  this.diamond_clarity,
+  this.diamond_color,
+  this.diamond_cost,
+  this.wastage_percent,
+  this.other_charges,
+  this.discount, @required this.onChanged})
       : super(key: key);
 
-  final  product_detail_name;
-  final  product_detail_picture;
-  final  product_detail_price;
+  final product_detail_name;
+  String product_detail_picture;
+  final product_code;
+  final description;
+  final metal_type;
+  final metal_color;
+  final gender;
+  final brand;
+  final gold_purity;
+  final silver_purity;
+  final platinum_purity;
+  final size;
+  final stone_presence;
+  final stone_weight;
+  final diamond_weight;
+  final gross_weight;
+  final net_weight;
+  final stone_cost;
+  final diamond_presence;
+  final diamond_carat;
+  final diamond_clarity;
+  final diamond_color;
+  final diamond_cost;
+  final wastage_percent;
+  final other_charges;
+  final discount;
   final String uid;
   final bool notFavorite;
   final ValueChanged<bool> onChanged;
@@ -427,7 +698,30 @@ class FavoriteIcon extends StatelessWidget {
               .document(product_detail_name.toString()).setData({
             "product_name":product_detail_name,
             "product_picture":product_detail_picture,
-            "product_price":product_detail_price,
+            "product_code": product_code,
+            "description": description,
+            "metal_type": metal_type,
+            "metal_color": metal_color,
+            "gender": gender,
+            "brand": brand,
+            "gold_purity": gold_purity,
+            "silver_purity": silver_purity,
+            "platinum_purity": platinum_purity,
+            "size": size,
+            "stone_presence": stone_presence,
+            "stone_weight": stone_weight,
+            "diamond_weight": diamond_weight,
+            "gross_weight": gross_weight,
+            "net_weight": net_weight,
+            "stone_cost": stone_cost,
+            "diamond_presence": diamond_presence,
+            "diamond_carat": diamond_carat,
+            "diamond_clarity": diamond_clarity,
+            "diamond_color": diamond_color,
+            "diamond_cost": diamond_cost,
+            "wastage_percent": wastage_percent,
+            "other_charges": other_charges,
+            "discount": discount,
             "favorite":true
           });
           print("Fav added");
