@@ -8,6 +8,7 @@ import 'package:karigari/db/category_list.dart';
 import 'package:karigari/db/database.dart';
 import 'package:karigari/pages/cart.dart';
 import 'package:karigari/db/user.dart';
+import 'package:karigari/pages/contact_us.dart';
 import 'package:karigari/pages/favorites.dart';
 import 'package:karigari/pages/my_orders.dart';
 import 'package:provider/provider.dart';
@@ -132,9 +133,13 @@ class _HomePageState extends State<HomePage> {
               ),
 
               InkWell(
-                onTap:(){},
+                onTap:(){
+                  Navigator.of(context).push(
+                    new MaterialPageRoute(builder: (context) => new contact_us()
+                    ));
+                },
                 child: ListTile(
-                  title: Text('About'),
+                  title: Text('Contact Us'),
                   leading: Icon(Icons.help),
                 ),
               ),
