@@ -50,7 +50,7 @@ class contact_us extends StatelessWidget {
                 child: Center(
                   child: Text( "For Indore, Madhya Pradesh only", style: TextStyle(fontSize: 20.0,),
                   ),),),),
-          ],
+          ],//
 
         ),
         Row(
