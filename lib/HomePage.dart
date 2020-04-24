@@ -1,13 +1,11 @@
-import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:flutter/material.dart';
 import 'package:karigari/components/Categories.dart';
 import 'package:karigari/db/auth.dart';
 import 'package:karigari/db/category_list.dart';
 import 'package:karigari/db/database.dart';
-import 'package:karigari/pages/cart.dart';
 import 'package:karigari/db/user.dart';
+import 'package:karigari/pages/cart.dart';
 import 'package:karigari/pages/contact_us.dart';
 import 'package:karigari/pages/favorites.dart';
 import 'package:karigari/pages/my_orders.dart';

@@ -1,12 +1,10 @@
-import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:karigari/pages/product_details.dart';
 import 'package:karigari/db/category_list.dart';
 import 'package:karigari/pages/Subcategory.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class Category extends StatefulWidget {
   final String userId;

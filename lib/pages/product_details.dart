@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:karigari/HomePage.dart';
 import 'package:karigari/db/user.dart';
 import 'package:karigari/pages/cart.dart';
 import 'package:provider/provider.dart';
