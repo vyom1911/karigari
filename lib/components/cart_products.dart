@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:karigari/db/user.dart';
 class Cart_products extends StatefulWidget {
   final String userId;
   Cart_products({this.userId});

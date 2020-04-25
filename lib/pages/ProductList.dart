@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:karigari/components/loading_in_app.dart';
-import 'package:karigari/pages/product_details.dart';
-import 'package:karigari/HomePage.dart';
 import 'package:karigari/pages/cart.dart';
+import 'package:karigari/pages/product_details.dart';
 class ProductList extends StatefulWidget {
   final String subcat_id;
   final String cat_id;
