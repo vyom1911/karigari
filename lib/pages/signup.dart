@@ -89,18 +89,18 @@ class _SignUpState extends State<SignUp> {
             width: double.infinity,
             height: double.infinity,
           ),
-          Container(
-            color: Colors.black.withOpacity(0.8),
-            width: double.infinity,
-            height: double.infinity,
-          ),
-          Container(
-              alignment: Alignment.topCenter,
-              child: Image.asset(
-                'images/lg.png',
-                width: 280.0,
-                height: 240.0,
-              )),
+          // Container(
+          //   color: Colors.black.withOpacity(0.8),
+          //   width: double.infinity,
+          //   height: double.infinity,
+          // ),
+          // Container(
+          //     alignment: Alignment.topCenter,
+          //     child: Image.asset(
+          //       'images/lg.png',
+          //       width: 280.0,
+          //       height: 240.0,
+          //     )),
           showAlert(),
           Center(
             child: Padding(
