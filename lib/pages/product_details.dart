@@ -448,28 +448,28 @@ class _ProductDetailsState extends State<ProductDetails> {
 
             widget.diamond_clarity!=0 ? new Row(children: <Widget>[
               Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
-                child:  new Text("Diamond Carat: ",style: TextStyle(color: Colors.grey),),),
+                child:  new Text("Diamond Clarity: ",style: TextStyle(color: Colors.grey),),),
               Padding(padding: EdgeInsets.all(5.0),
                 child: new Text("${widget.diamond_clarity}"),)
             ],) : new Container(),
 
             widget.diamond_color!=0 ? new Row(children: <Widget>[
               Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
-                child:  new Text("Diamond Carat: ",style: TextStyle(color: Colors.grey),),),
+                child:  new Text("Diamond Color: ",style: TextStyle(color: Colors.grey),),),
               Padding(padding: EdgeInsets.all(5.0),
                 child: new Text("${widget.diamond_color}"),)
             ],) : new Container(),
 
             widget.diamond_weight!=0 ? new Row(children: <Widget>[
               Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
-                child:  new Text("Diamond Carat: ",style: TextStyle(color: Colors.grey),),),
+                child:  new Text("Diamond Weight: ",style: TextStyle(color: Colors.grey),),),
               Padding(padding: EdgeInsets.all(5.0),
                 child: new Text("${widget.diamond_weight}"),)
             ],) : new Container(),
 
             widget.diamond_cost!=0 ? new Row(children: <Widget>[
               Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
-                child:  new Text("Diamond Carat: ",style: TextStyle(color: Colors.grey),),),
+                child:  new Text("Diamond Cost: ",style: TextStyle(color: Colors.grey),),),
               Padding(padding: EdgeInsets.all(5.0),
                 child: new Text("${widget.diamond_cost}"),)
             ],) : new Container(),
@@ -496,9 +496,9 @@ class _ProductDetailsState extends State<ProductDetails> {
 
             widget.discount!=0 ? new Row(children: <Widget>[
               Padding(padding: const EdgeInsets.fromLTRB(12.0, 5.0, 5.0, 5.0),
-                child:  new Text("Diamond Carat: ",style: TextStyle(color: Colors.grey),),),
+                child:  new Text("Discount: ",style: TextStyle(color: Colors.grey),),),
               Padding(padding: EdgeInsets.all(5.0),
-                child: new Text("${widget.discount}"),)
+                child: new Text("${widget.discount}%"),)
             ],) : new Container(),
 
             new Row(children: <Widget>[

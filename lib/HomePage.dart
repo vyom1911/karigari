@@ -32,31 +32,31 @@ class _HomePageState extends State<HomePage> {
     userData = Provider.of<UserData>(context);
 
 
-    //Build the page
-    Widget image_carousel = new Container(
-      height: 400.0,
-      child: Carousel(
-        boxFit: BoxFit.cover,
-        images: [
-          AssetImage('images/c1.jpeg'),
-          AssetImage('images/m1.jpeg'),
-          AssetImage('images/w3.jpeg'),
-          AssetImage('images/w4.jpeg'),
-          AssetImage('images/m3.jpeg'),
-        ],
-        autoplay: true,
-        animationCurve: Curves.fastOutSlowIn,
-        animationDuration: Duration(milliseconds: 1000),
-        dotSize: 6.0,
-        indicatorBgPadding: 6.0,
-      ),
-    );
+    //Build Image Carousel widget for sliding images
+//    Widget image_carousel = new Container(
+//      height: 400.0,
+//      child: Carousel(
+//        boxFit: BoxFit.cover,
+//        images: [
+//          AssetImage('images/c1.jpeg'),
+//          AssetImage('images/m1.jpeg'),
+//          AssetImage('images/w3.jpeg'),
+//          AssetImage('images/w4.jpeg'),
+//          AssetImage('images/m3.jpeg'),
+//        ],
+//        autoplay: true,
+//        animationCurve: Curves.fastOutSlowIn,
+//        animationDuration: Duration(milliseconds: 1000),
+//        dotSize: 6.0,
+//        indicatorBgPadding: 6.0,
+//      ),
+//    );
 
     return Scaffold(
         appBar: new AppBar(
           elevation: 0.1,
           backgroundColor: Colors.red,
-          title: Center(child: Text('Karigari')),
+          title: Center(child: Text('Kaarigari')),
           actions: <Widget>[
             new IconButton(icon: Icon(Icons.search, color:Colors.white), onPressed: (){}),
             new IconButton(icon: Icon(Icons.shopping_cart, color:Colors.white), onPressed: (){
@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
         new ListView(
           children: <Widget>[
             //image carousel begins here
-            image_carousel,
+            //image_carousel,
 
             //Padding_widget
             new Padding(padding: const EdgeInsets.all(20.0),
